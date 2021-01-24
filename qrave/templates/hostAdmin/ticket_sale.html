@@ -1,0 +1,353 @@
+{% extends "layout.html" %}
+{% block content %}
+<h1 style="text-align: center;">Biljettförsäljning</h1>
+<h5 style="text-align: center;">{{event.name}} - {{event.date_ticket_sale.year}}</h5>
+<hr>
+
+<div class="row">
+    <div class="col-6">
+        <div class="content-section">
+            <form method="POST" enctype="application/x-www-form-urlencoded">
+
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="paymentType" id="paymentTypeSwish" value="swish" checked>
+                    <label class="form-check-label" for="paymentType">Swish</label>
+                </div>
+
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="paymentType" id="paymentTypeCash" value="cash">
+                    <label class="form-check-label" for="paymentType">Kontant</label>
+                </div>
+
+                <hr>
+
+                <div class="form-group">
+                    <label for="uid">Användare <small> - Du kan söka efter namn, LiU-ID eller mailadress</small></label>
+                    <select name="uid" class="form-control" id="uid"></select>
+                    <div class="invalid-feedback"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Telefon</label>
+                    <input type="phone" name="phone" class="form-control" id="phone">
+                    <div class="invalid-feedback"></div>
+                </div>
+                
+                <hr>
+                
+                {% for ticket in event.ticket_meta %}
+                {% if not ticket.digital_release %}
+                <div class="form-group">
+                    <label for="ticket-{{ticket.id}}">Antal biljetter {{ticket.date_start.weekday()}}</label>
+                    <input min='0' price={{ticket.price}} type="number" max="{{ticket.max_per_user}}" name="ticket-{{ticket.id}}" class="form-control" id="ticket-{{ticket.id}}">
+                    {% if not ticket.max_per_user == -1 %}
+                    <small class="form-text text-muted">Max {{ticket.max_per_user}} biljetter per köpare.</small>
+                    {% endif %}
+                    <div class="invalid-feedback"></div>
+                </div>
+                {% endif %}
+                {% endfor %}
+                
+                {% if event.products %}
+                <hr>
+                {% endif %}
+                
+                {% for product in event.products %}
+                <div class="form-group">
+                    <label for="product-{{product.id}}">Antal {{product.name}}</label>
+                    <input min='0' price={{product.price}} type="number" name="product-{{product.id}}" class="form-control" id="product-{{product.id}}">
+                    <div class="invalid-feedback"></div>
+                </div>
+                {% endfor %}
+                
+                <div class="form-group">
+                    <label for="price-change">Förändra priset</label>
+                    <input price='1' type="number" name="product-change" class="form-control" id="price-change">
+                    <small class="form-text text-muted">Belopp att förändra priset med (+/-)</small>
+                </div>
+                
+                <hr>
+
+                <div class="form-group">
+                    <label for="price">Pris: <span id="priceShown"></span></label>
+                    <input id="price" hidden name="price">
+                </div>
+                <button type="button" id="swishButton" class="btn btn-outline-info">Reservera biljetter</button>
+                <button type="button" id="cashButton" class="btn btn-outline-info">Acceptera betalning</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-6">
+
+        {% for ticket in event.ticket_meta %}
+        <div class="row">
+            <div class="col-12">
+            <div class="content-section">
+                <h6 name="weekday">{{ticket.date_start.weekday()}}</h6>
+                <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    Biljetter kvar: <span id="tickets-left-{{ticket.id}}" class="font-weight-bold"></span>
+                    <div class="progress"><div id="tickets-progress-{{ticket.id}}" class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div></div>
+                </li>
+                <li class="list-group-item">Reserverade biljetter: <span id="tickets-reserved-{{ticket.id}}" class="font-weight-bold"></span></li>
+                <li class="list-group-item">Sålda biljetter: <span id="tickets-sold-{{ticket.id}}" class="font-weight-bold"></span></li>
+                </ul>
+            </div>
+            </div>
+        </div>
+        {% endfor %}
+
+        <div class="form-group">
+            <div id='log' class="form-control" rows=10 style="width: 100%; max-height: 200px; height:200px; overflow-y: scroll; " readonly></div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock content %}
+
+{% block head %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+    h6[name="weekday"]
+    {
+        text-transform:capitalize;
+    }
+</style>
+{% endblock head %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<!-- AJAX -->
+<script>
+    function log_append(text, type) {
+        data = '<span class="alert-' + type + '">' + text + '</span><br>'
+        $.ajax({
+            type: 'POST',
+            url: '/api/sales_log/{{event.id}}',
+            data: {'log': data},
+            success: function(data) {
+                $('#log').append(data);
+                $("#log").scrollTop($("#log")[0].scrollHeight);
+            }
+        });
+    }
+
+    function validateForm() {
+        var ajax = $.ajax({
+            type: "POST",
+            url: "/api/hostAdmin/validateticketform/{{event.id}}",
+            data: $('form').serialize(),
+            success: function(data) {
+                if (data == true) {
+                    $('input').each(function () {
+                        $(this).removeClass('is-invalid');
+                    });
+                    return(data);
+                } else {
+                    for (var error in data) {
+                        $("#" + error).parent().find(".invalid-feedback").html('<span>' + data[error] + '</span>');
+                        $("#" + error).addClass("is-invalid");
+                    }
+                }
+            }
+        });
+        return ajax;
+    }
+
+    $('#cashButton').click(function () {
+        ajax = validateForm();
+        ajax.done (function () {
+            if (ajax.responseJSON == true) {
+                $.ajax({
+                    type: "POST",
+                    url: "/api/hostAdmin/transfertickets/{{event.id}}",
+                    data: $('form').serialize(),
+                    success: function(data) {
+                        if (data == true) {
+                            log_append('Köpet genomfört för ' + $('#uid').select2('data')[0].text, 'success')
+                            $('input').not('input[type=radio]').each(function () {
+                                $(this).val("");
+                            });
+                            $('#uid').val(null).trigger('change');
+                            $('#priceShown').html();
+                        } else {
+                            log_append('En eller fler biljetter kunde inte överföras för ' + $('#uid').select2('data')[0].text, 'warning')
+                            for (var error in data) {
+                                log_append(data[error], 'danger');
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    });
+
+    // Swish sa det
+    $("#swishButton").click(function () {
+        var ajax = validateForm();
+        ajax.done(function () {
+            if (ajax.responseJSON == true) {
+                $.ajax({
+                    type: "POST",
+                    url: "/api/hostAdmin/swish/{{event.id}}",
+                    data: $('form').serialize(),
+                    success: function (data) {
+                        if (!$.isEmptyObject(data['server_errors'])) {
+                            for (var error in data['server-errors']) {
+                                log_append(data['server-errors'][error], 'danger');
+                            }
+                        }
+                        else if (!$.isEmptyObject(data['swish_errors'])) {
+                            log_append("Betalningsförfrågan kunde inte ske. Kontrollera swishnummer och belopp.", 'danger');
+                            log_append("<small>Error code: " + data['swish_errors']['errorCode'] + "<br>Error message: " + data['swish_errors']['errorMessage'] + "</small>", 'danger');
+                        }
+                        else {
+                            log_append("Biljetter reserverade " + $('#uid').select2('data')[0].text, 'success');
+                            log_append('<small><a href="#test" data="' + data['swish_url'] + '" onclick="swish_force($(this))">Klicka här för att forcera kontroll av swish för ' + $('#uid').select2('data')[0].text + '</a></small>', 'warning');
+                            $('input').not('input[type=radio]').each(function () {
+                                $(this).val("");
+                            });
+                            $('#uid').val(null).trigger('change');
+                            $('#priceShown').html('');
+                        }
+                    }
+                });
+            }
+        });
+    });
+
+    function swish_force(e) {
+        url = e.attr('data');
+        console.log(url);
+        $.ajax({
+            type: "POST",
+            url: "/api/hostAdmin/swishForce",
+            headers: {'swishurl': url},
+            success: function (data) {
+                if (!$.isEmptyObject(data['user'])) {
+                    log_append('Biljetterna överförda till ' + data['user'], 'success');
+                } else {
+                    if (data['status'] != "CREATED") {
+                        log_append("Error code: " + data['error'] + "<br>Message: " + data['message'], 'danger');
+                    } else {
+                        log_append('Betalningen har inte gått igenom ännu.', 'warning');
+                    }
+                }
+            }
+        });
+    }
+
+    // Hämta email genom ett ajax anrop, VADÅRRA?
+    $('#uid').select2({
+        ajax: {
+            url: '/api/getusers/',
+            type: 'GET',
+            dataType: 'json',
+            data: function (params) {
+                var query = {
+                    email: params.term
+                }
+                return query;
+            },
+            processResults: function (data) {
+                return {
+                    results: data.results
+                };
+            }
+        }
+    });
+
+</script>
+
+
+<!-- On document ready -->
+<script>
+    function calculatePrice() {
+        var price = 0;
+        $('input[type=number]').each(function () {
+            if (parseInt($(this).val())) {
+                price = price + parseInt($(this).val()) * parseInt($(this).attr('price'));
+            }
+        });
+        return price;
+    };
+
+    $('#uid').on('select2:select', function (e) {
+        $.ajax({
+            url: '/api/getphone/' + e.params.data['id'],
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                $('#phone').val(data)
+            }
+        })
+    });
+
+    // Fixar dagar, synlighet, osv
+    var days = ['måndag', 'tisdag', 'onsdag', 'torsdag', 'fredag', 'lördag', 'söndag'];
+    $(document).ready(function () {
+        $('label[for^=ticket-], h6[name=weekday]').each(function (j) {
+            var weekday = $(this).html().match(/\d+/)[0];
+            $(this).html($(this).html().replace(weekday, days[parseInt(weekday)]));
+        });
+        
+        $('#cashButton').hide();
+        $('#salesMessage').hide();
+        $('#errorMessage').hide();
+
+        $.ajax({
+            url: '/api/sales_log/{{event.id}}',
+            type: 'GET',
+            success: function (data) {
+                $('#log').html(data);
+                $("#log").scrollTop($("#log")[0].scrollHeight);
+            }
+        });
+
+        $('input[type=number]').each(function () {
+            $(this).change(function () {
+                price = calculatePrice();
+                $("#priceShown").html(price);
+                $("#price").val(price);
+            });
+        });
+
+        $("input[type=radio]").each(function (j) {
+            $(this).click(function () {
+                if ($(this).attr("value") == "cash" && $(this).is(":checked")) {
+                    $('#swishButton').hide();
+                    $('#phone').parent().hide();
+                    $('#cashButton').show();
+                } else if ($(this).attr("value") == "swish" && $(this).is(":checked")) {
+                    $('#swishButton').show();
+                    $('#phone').parent().show();
+                    $('#cashButton').hide();
+                }
+            });
+        });
+
+        (function worker() {
+            $.ajax({
+                url: '/api/unsold_tickets/{{event.id}}',
+                success: function(data) {
+                    for (var ticket in data) {
+                        $('#tickets-left-' + ticket).html(data[ticket]['unsold']-data[ticket]['reserved']);
+                        $('#tickets-reserved-' + ticket).html(data[ticket]['reserved']);
+                        $('#tickets-sold-' + ticket).html(parseInt(data[ticket]['capacity'])-parseInt(data[ticket]['unsold']));
+                        proc = 100*(parseInt(data[ticket]['unsold'])/parseInt(data[ticket]['capacity']));
+                        $('#tickets-progress-' + ticket).attr("style", "width: " + proc + "%");
+                    }
+                },
+                complete: function() {
+                    setTimeout(worker, 2000);
+                }
+            });
+        })();
+
+    });
+    
+</script>
+{% endblock scripts %}

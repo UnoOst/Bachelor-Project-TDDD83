@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+{% block content %}
+
+    {% if tickets|length > 0 %}
+    <h1 style="text-align: center;">Använda biljetter</h1>
+    <hr>
+    {% for ticket in tickets %}
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8 col-xl-7">
+            <div class="card shadow-sm">
+                <button type="button" class="btn btn-secondary" data-toggle="collapse" data-target="#data_{{ ticket.id }}"> {{ticket.meta.name}} - {{ticket.meta.date_start.year}}</button>
+                <div id="data_{{ ticket.id }}" class="collapse">
+                    <br>
+                    <div class="flip-card d-flex justify-content-center">
+                        <img class="card-img-top mt-4 rounded" style="max-height: 250px; max-width: 350px; opacity: 0.3;" src="/static/{{ticket.meta.image}}">
+                        <img class="card-img-top mt-4" style="max-height: 250px; max-width: 350px; position: absolute;" src="/static/images/expired.png">
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-3 date-badge">
+                                <h2>
+                                    <span class="month">{{ticket.meta.date_start.month}}</span>
+                                    <br>
+                                    <span class="date">{{ticket.meta.date_start.day}}</span>
+                                </h2>
+                            </div>                                
+                            <div class="col-6">
+                                <h5><a style="color: black;" href="/event/{{ticket.meta.event.id}}">{{ticket.meta.name}} - {{ticket.meta.date_start.year}}</a></h5>
+                                <p class="card-text">
+                                    <i data-feather="map-pin"></i> {{ticket.meta.location}}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <br>
+    {% endfor %}
+    {% else %}
+    <h1 style="text-align: center;">Du har inga använda biljetter</h1>
+    <hr>
+    <h3 style="text-align: center;"><a style="color:gray;" href="/events/">Se kommande event</a></h3>
+    {% endif %}
+
+{% endblock content %}

@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="content-section shadow-sm col-lg-8 offset-lg-2">
+      <div class="media">
+        <div class="media-body">
+          <h2 class="account-heading">{{ current_user.name }}</h2>
+          <p class="text-secondary">{{ current_user.email }}</p>
+        </div>
+      </div>
+        <form method="POST" action="" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Kontoinformation</legend>
+                {% for field in form %}
+                {% if field.type == "SubmitField" or field.flags.hidden %}
+                {% else %}
+                <div class="form-group">
+                    {{ field.label(class="form-control-label") }}
+                    {% if field.errors %}
+                        {{ field(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in field.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ field(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                {% endif %}
+                {% endfor %}
+            </fieldset>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-outline-info") }}
+            </div>
+        </form>
+    </div>
+{% endblock content %}

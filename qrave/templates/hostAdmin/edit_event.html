@@ -1,0 +1,537 @@
+{% extends "layout.html" %}
+{% block content %}
+<h1 style="text-align: center;">{{host.long_name}} <img src="/static/{{host.image}}?v={{ date }}" class="host-top-image" alt=""></h1>
+
+<hr>
+
+    <div class="content-section col-md-8 offset-md-2 col-lg-6 offset-lg-3" id="createeventcontainer">
+        <form method="POST" action="" id="createeventform" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            <h3>Ändra event</h3>
+            <!-- progressbar -->
+            <div id="progress-bar">
+                <div class="progress">
+                    <div class="progress-bar bg-success" role="progressbar" style="width: 33%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <div class="progress d-none">
+                    <div class="progress-bar progress-bar bg-success" role="progressbar" style="width: 66%" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <div class="progress d-none">
+                    <div class="progress-bar progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+            
+            <!-- Evenemangdetaljer -->
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Information om evenemanget</legend>
+                {% for field in form.event %}
+                {% if field.flags.hidden or field.type == "FieldList" or field.type == "FileField" or field.type == "SelectMultipleField" %}
+                {% elif field.type == "TextAreaField" %}
+                <div class="form-group">
+                    {{ field.label(class="form-control-label") }}
+                    {% if not field.flags.required %}<small class="text-muted"> - Valfri</small>{% endif %}
+                    {{ field(class="form-control summernote") }}
+                </div>
+                {% else %}
+                <div class="form-group">
+                    {{ field.label(class="form-control-label") }}
+                    {% if not field.flags.required %}<small class="text-muted"> - Valfri</small>{% endif %}
+                    {{ field(class="form-control") }}
+                </div>
+                {% endif %}
+                {% endfor %}
+                <div id="editCheck" style="display: none;">
+                    {{form.event.edit(readonly=true)}}
+                </div>
+                <div class="form-group">
+                    {{ form.event.cohosts.label(class="form-control-label") }}<small class="text-muted"> - Valfri</small><br>
+                    {{ form.event.cohosts(class="selectpicker", data_live_search="true") }}
+                    <button type="button" class="btn btn-outline-info" id="removeCoHosts">Rensa</button>
+                </div>
+                <div class="form-group">
+                    {{ form.event.image.label(class="form-control-label") }}<small class="text-muted"> - Lämna tomt för att behålla nurvarande bild.</small>
+                    <a id="tooltip_event" data-toggle="tooltip" data-placement="right" title="Ladda upp bilden för evenemanget. OBS! Bilden behöver vara i .jpg- eller .png format">
+                        <i data-feather="info" style="width: 15px; padding-bottom: 2px;"></i>
+                    </a>
+                    <br>
+                    <div class="input-group mb-3">
+                        {{ form.event.image(accept="image/*", style="visibility: hidden; position: absolute;") }}
+                        <button type="button" class="browse btn btn-primary">Ladda upp bild</button>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <img src="/static/{{event.image}}" id="preview" class="img-thumbnail">
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <input type="button" name="next" onclick="window.scrollTo({ top: 0, behavior: 'smooth' });" class="next btn btn-outline-info" value="Nästa"/>
+            </fieldset>
+
+            <!-- Biljettinfo -->
+            <fieldset class="form-group" id="ticketinfo">
+                <legend class="border-bottom mb-4">Biljettinfo</legend>
+                <div class="subforms-container">
+                    {% for field in form.tickets %}
+                    <div id="tickets-0-form" class="subform" data-index="0">
+                        <h5>Biljett <span>{{loop.index}}</span></h5>
+                        {% for field2 in field.digital_release %}
+                        <div class="form-check">
+                            {{field2(class="form-check-input multiple")}}
+                            {{field2.label(class="form-check-label multiple")}}
+                        </div>
+                        {% endfor %}
+                        <br>
+                        {% for field3 in field %}
+                        {% if field3.flags.hidden or field.type == "FileField" or field3.type == "RadioField" %}
+                        {% elif field3.type == "TextAreaField" %}
+                        <div class="form-group">
+                            {{ field3.label(class="form-control-label multiple") }}
+                            {% if not field3.flags.required %}<small class="text-muted"> - Valfri</small>{% endif %}
+                            {{ field3(class="form-control multiple summernote") }}
+                        </div>
+                        {% elif "date_ticket_release" in field3.name %}
+                        <div class="form-group date_ticket_release">
+                            {{ field3.label(class="form-control-label multiple") }} 
+                            <a id="tooltip_digital_release" data-toggle="tooltip" data-placement="right" title="Vilket datum och vilken tid vill du att biljettförsäljningen går över till digital form? Exempelvis om eventet inte säljer slut under biljettsläppet går det att välja datum och tid då biljetter kan säljas digitalt genom QRave">
+                                <i data-feather="info" style="width: 15px; padding-bottom: 2px;"></i>
+                            </a>
+                            {{ field3(class="form-control multiple") }}
+                        </div>
+                        {% elif "image" not in field3.name %}
+                        <div class="form-group">
+                            {{ field3.label(class="form-control-label multiple") }}
+                            {% if not field3.flags.required %}<small class="text-muted"> - Valfri</small>{% endif %}
+                            {{ field3(class="form-control multiple") }}
+                        </div>
+                        {% endif %}
+                        {% endfor %}  
+                        <div id="helpID" style="display: none;">
+                            {{field.helpID(readonly=true)}}
+                        </div>
+                        <div class="form-group">
+                            {{ form.tickets[0].image.label(class="form-control-label multiple") }}
+                            <small class="text-muted"> - Lämna tomt för att behålla nurvarande bild.</small>
+                            <a id="tooltip_ticket" data-toggle="tooltip" data-placement="right" title="Ladda upp bilden för biljetten. OBS! Bilden behöver vara i .jpg- eller .png format">
+                                <i data-feather="info" style="width: 15px; padding-bottom: 2px;"></i>
+                            </a><br>
+                            <div class="input-group mb-3">
+                                {{ form.tickets[0].image(class="multiple form-control-file", accept="image/*", style="visibility: hidden; position: absolute;") }}
+                                <button type="button" class="browse btn btn-primary">Ladda upp bild</button>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <img src="/static/{{tickets_img[field.helpID.data]}}" id="preview" class="img-thumbnail">
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                    {% endfor %}
+                </div>
+                <br>
+                <input type="button" name="prev" class="prev btn btn-outline-info" value="Tillbaka"/>
+                <input type="button" name="next" class="next btn btn-outline-info" onclick="window.scrollTo({ top: 0, behavior: 'smooth' });" value="Nästa"/>
+            </fieldset>
+
+            <!-- Produktinfo -->
+            <fieldset class="form-group" id="productinfo">
+                <legend class="border-bottom mb-4">Produktinfo<small class="text-muted"> - Även märken</small></legend>
+                <label class="form-control-label">Produkter</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="products" id="productsYes" value="yes" checked>
+                    <label class="form-check-label" for="products">Ja</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="products" id="productNo" value="no">
+                    <label class="form-check-label" for="products">Nej</label>
+                </div>
+                <hr>
+                <div class="subforms-container">
+                    
+                    {% if nrOfProducts != 0 %}
+                        {% set adjustment = 0 %}
+                    {% else %}
+                        {% set adjustment = -1 %}
+                    {% endif %}
+
+                    {% for field in form.products[:nrOfProducts-adjustment] %}
+                    <div id="products-0-form" class="subform" data-index="0">
+                        <h5>Produkt <span>{{loop.index}}</span></h5>
+                        {% for field2 in field %}
+                        {% if field2.flags.hidden or field2.type == "FileField" or field2.type == "RadioField" %}
+                        {% else %}
+                        <div class="form-group">
+                            {{ field2.label(class="form-control-label") }}
+                            {% if not field2.flags.required %}<small class="text-muted"> - Valfri</small>{% endif %}
+                            {{ field2(class="form-control multiple") }}
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                        <div class="form-group">
+                            {{ field.image.label(class="form-control-label multiple") }}<small class="text-muted"> - Lämna tomt för att behålla nurvarande bild.</small>
+                            <a id="tooltip_product" data-toggle="tooltip" data-placement="right" title="Ladda upp bilden för produkten. OBS! Bilden behöver vara i .jpg- eller .png format">
+                                <i data-feather="info" style="width: 15px; padding-bottom: 2px;"></i>
+                            </a>
+                            <br>
+                            <div class="input-group mb-3">
+                                {{ field.image(class="multiple form-control-file", accept="image/*", style="visibility: hidden; position: absolute;") }}
+                                <button type="button" class="browse btn btn-primary">Ladda upp bild</button>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <img src="/static/{{products_img[loop.index-1]}}" id="preview" class="img-thumbnail">
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                    {% endfor %}
+                </div>
+                <br>
+                <input type="button" name="prev" class="prev btn btn-outline-info" value="Tillbaka"/>
+                <input type="button" name="next" class="next btn btn-outline-info" value="Förhandsgranska"/>
+            </fieldset>
+        </form>
+
+    </div>
+    <div class="row justify-content-center" id="previewEvent">
+        <div id="preview-section" class="col-12"></div>
+    
+        <div class="form-group py-4">
+            <input type="button" name="prev" class="prev btn btn-outline-info" value="Tillbaka"/>
+            <input type="button" name="save" class="next btn btn-outline-success" value="Spara event"/>
+        </div>
+    </div>
+
+    <div id="loading" class="text-center justify-content-center" style="position: fixed; top: 0px; left: 0px; min-width: 100vw; min-height: 100vh; background: #fafafa; z-index: 100000; display:none;">
+        <div style="margin-top: 7%"><span style="font-size: 4rem; padding-right: 2rem">Sparar event...</span>
+            <div style="height:2.5rem; width:2.5rem" class="spinner-border text-success" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+            <p>Ge oss ett par sekunder</p>
+        </div>
+    </div>
+
+
+{% endblock content %}
+
+{% block head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/css/bootstrap-select.min.css">
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.16/dist/summernote.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.16/dist/summernote-bs4.min.css" rel="stylesheet">
+{% endblock head %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.16/dist/summernote-bs4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/js/bootstrap-select.min.js"></script>
+
+<!-- AJAX Validation + Progress bar + Pagination -->
+<script>
+    var current_fs, next_fs, previous_fs; 
+    $(".next").click(function(){
+        page = $(".next").index($(this)) + 1;
+        $(".form-control").removeClass("is-invalid");
+        $(".form-group div .invalid-feedback").remove()
+        var url = "/api/hostAdmin/validate/" + page + "/";
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: $('form').serialize(),
+            success: function (data) {
+                if (data == "1" || data == "2" || data == "3" ){
+                    data = parseInt(data);
+                }
+                if (page == 4) {
+                    loadingScreen();
+                    $('#createeventform').submit();
+                }
+                if (Number.isInteger(data)) {
+                    if (data == 3) {
+                        $('#createeventcontainer').hide();
+                        var ajax = loadPreview();
+                        ajax.done(function () {
+                            eventimg = $('fieldset').first().find('img.img-thumbnail').attr('src');
+                            $('#preview-section').find('img').first().attr('src', eventimg);
+                            $('#preview-section').find('a[href^="/buy_tickets/"]').each(function () {
+                                $(this).addClass('disabled');
+                            });
+                            $('#preview-section').find('a[href^="/hosts/"]').each(function () {
+                                $(this).attr('href', '#');
+                            });
+                            $('#previewEvent').show();
+                        });
+                    } else {
+                        $current_fs = $($("fieldset")[data-1]);
+                        $next_fs = $($("fieldset")[data]);
+                        $(".progress").eq($("fieldset").index($next_fs)).removeClass("d-none");
+                        $(".progress").eq($("fieldset").index($current_fs)).addClass("d-none");
+                        $current_fs.hide();
+                        $next_fs.show();
+                    }
+                } else {
+                    console.log(data);
+                    if (page == 1) {
+                        for (var form in data.data) {
+                            for (var field in data.data[form]) {
+                                $("#"+form+"-"+field).addClass("is-invalid");
+                                $group = $("#"+form+"-"+field).parent();
+                                $group.append('<div class="invalid-feedback"><span>' + data.data[form][field][0] + '</span></div>');
+                            }
+                        }
+                    } else {
+                        for (var form in data.data) {
+                            for (var object in data.data[form]) {
+                                for (var field in data.data[form][object]) {
+                                    $("#"+form+"-"+object+"-"+field).addClass("is-invalid");
+                                    $group = $("#"+form+"-"+object+"-"+field).parent();
+                                    $group.append('<div class="invalid-feedback"><span>' + data.data[form][object][field][0] + '</span></div>');
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Inject our CSRF token into our AJAX request.
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", "{{ form.csrf_token._value() }}")
+                }
+            }
+        }); 
+    });
+
+    $(".prev").click(function(){
+        if ($('#createeventcontainer').is(':visible')) {
+            current_fs = $(this).parent();
+            previous_fs = $(this).parent().prev();
+            $(".progress").eq($("fieldset").index(previous_fs)).removeClass("d-none");
+            $(".progress").eq($("fieldset").index(current_fs)).addClass("d-none");
+            previous_fs.show();
+            current_fs.hide();
+        }
+        else {
+            $('#previewEvent').hide();
+            $('#createeventcontainer').show();
+        }
+    });
+
+    function loadPreview() {
+        var ajax = $.ajax({
+            type: "POST",
+            url: "/api/getEventPreview/{{host_id}}/",
+            data: $('form').serialize(),
+            success: function (data) {
+                $('#preview-section').html(data);
+                $(".month").each(function(){
+                    var months = ["Jan", "Feb", "Mar", "Apr", "Maj", 
+                                  "Jun", "Jul", "Aug", "Sep", "Okt", 
+                                  "Nov", "Dec"];
+                    
+                    $(this).text(months[parseInt($(this).text()) - 1])
+                });
+            }
+        });
+        return ajax;
+    };
+
+    function loadingScreen() {
+        $('#loading').show();
+    }
+</script>
+
+<!-- Hanterar så att man kan lägga till/ta bort produkter/biljetter -->
+<script>
+    function adjustIndices(removedIndex, $fieldset) {
+        var $forms = $fieldset.find('.subform');
+
+        $forms.each(function (i) {
+            var $form = $(this);
+            var index = parseInt($form.attr('data-index'));
+            var newIndex = index - 1;
+
+            if (index < removedIndex) {
+                return true;
+            }
+
+            replaceIndex($form, index, newIndex)
+        });
+    }
+
+    function replaceIndex($form, oldIndex, newIndex, removeData=false) {
+        $form.attr('id', $form.attr('id').replace(oldIndex, newIndex));
+        $form.attr('data-index', newIndex);
+
+        $form.find('input.multiple').each(function (j) {
+            var $item = $(this);
+            if ($item.attr('id').startsWith("tickets") || $item.attr('id').startsWith("products")) {
+                $item.attr('id', $item.attr('id').replace(oldIndex, newIndex));
+                $item.attr('name', $item.attr('name').replace(oldIndex, newIndex));
+                if (removeData && ($item.attr('id').indexOf('digital_release') == -1)) {
+                    $item.val("");
+                }
+            }
+        });
+
+        $form.find('textarea.multiple').each(function (j) {
+            var $item = $(this);
+            $item.attr('id', $item.attr('id').replace(oldIndex, newIndex));
+            $item.attr('name', $item.attr('name').replace(oldIndex, newIndex));
+            if (removeData) {
+                $item.val("");
+            }
+        });
+
+        $form.find('h5').find("span").html(newIndex+1);
+
+        $form.find('label.form-control-label.multiple').each(function (j) {
+            var $item = $(this);
+            $item.attr('for', $item.attr('for').replace(oldIndex, newIndex));
+        });
+    }
+
+    function removeForm() {
+        var $removedForm = $(this).closest('.subform');
+        var removedIndex = parseInt($removedForm.attr('data-index'));
+        var $fieldset = $(this).closest('fieldset');
+        var $lastForm = $("#" + $fieldset.attr('id') + ' .subform');
+        $removedForm.remove();
+        if ($lastForm.length == 2) {
+            $lastForm.find('.remove').addClass('hidden');
+        }
+        adjustIndices(removedIndex, $fieldset);
+    }
+
+    function addForm() {
+        var $fieldset = $(this).closest('fieldset');
+        var $subForms = $("#" + $fieldset.attr('id') + ' .subform');
+        var newIndex = 0;
+        if ($subForms.last().length > 0) {
+            newIndex = parseInt($subForms.last().attr('data-index')) + 1;
+        }
+
+        if ($subForms.first().length == 1) {
+            $subForms.last().find('.remove').removeClass('hidden');
+        }
+
+        var $newForm = $subForms.first().clone();
+        replaceIndex($newForm, '0', newIndex, true)
+
+        var t = $fieldset.children('.subforms-container').first();
+        t.append($newForm);
+        $newForm.addClass('subform');
+        $newForm.removeClass('is-hidden');
+        $newForm.find('.remove').click(removeForm);
+        
+        $newForm.find("input[type=radio].multiple").each(function (j) {
+            $(this).click(showDate);
+        });
+
+        $newForm.find(".note-editor").first().remove();
+        $newForm.find(".summernote").summernote({
+            height: 200,
+            toolbar: [
+            ['style', ['bold', 'italic', 'underline', 'clear']],
+            ['font', ['strikethrough', 'superscript', 'subscript']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['misc', ['undo', 'redo']]
+        ]});
+        
+        $newForm.find('.browse').click(openFileDialog);
+        $newForm.find('input[type="file"]').change(function(e) {
+            displayImage(e);
+        });
+    }
+</script>
+
+<!-- Document ready -->
+<script>
+    $(document).ready(function () {
+        
+        $('#tooltip_event').tooltip();
+        $('#tooltip_digital_release').tooltip();
+        $('#tooltip_ticket').tooltip();
+        $('#tooltip_product').tooltip();
+
+        $('.add').each(function (j) {
+            $(this).click(addForm);
+        });
+        $('.remove').each(function (j) {
+            $(this).click(removeForm);
+        });
+        $('select').selectpicker();
+        $('#removeCoHosts').click(function(j) {
+            $('#event-cohosts').selectpicker('deselectAll');
+        });
+        
+        $('.summernote').each(function (j) {
+            $(this).summernote({
+                height: 200,
+                toolbar: [
+                ['style', ['bold', 'italic', 'underline', 'clear']],
+                ['font', ['strikethrough', 'superscript', 'subscript']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['misc', ['undo', 'redo']]
+              ]});
+        });
+        
+        $("input[type=radio].multiple").each(function (j) {
+            $(this).click(showDate);
+        });
+
+        $(".browse").each(function (j) {
+            $(this).click(openFileDialog);
+        });
+
+        $('#previewEvent').hide();
+    
+        $('input[type="file"]').each(function (j) {
+            $(this).change( function(e) {
+                displayImage(e);
+            });
+        });
+
+        $("input[type=radio][name=products]").change(function (j) {
+            if ($(this).val() == "yes") {
+                $(this).parent().parent().find('.subforms-container').first().show();
+                $("#addproduct").show();
+            } else if ($(this).val() == "no") {
+                $(this).parent().parent().find('.subforms-container').first().hide();
+                $("#addproduct").hide();
+            }
+        });
+    });
+
+    function openFileDialog() {
+        var file = $(this).siblings('input[type="file"]').first();
+        file.trigger("click");
+    };
+
+    function displayImage(e) {
+        var fileName = e.target.files[0].name;
+        
+        var $formgroup = $(e.target).parents("div.form-group").first();
+        $formgroup.find('input[type="text"').first().val(fileName);
+        var reader = new FileReader();
+
+        reader.onload = function(f) {
+            $formgroup.find("img").first().attr("src", f.target.result);
+        };
+        reader.readAsDataURL(e.target.files[0]);
+    };
+
+    function showDate() {
+        var $subform = $(this).closest('.subform');
+        if ($(this).attr('id').indexOf('digital_release-0') == -1 && $(this).is(':checked')) {
+            $subform.find('.date_ticket_release').addClass("hidden");
+        }
+        else if ($(this).attr('id').indexOf('digital_release-1') == -1 && $(this).is(':checked')) {
+            $subform.find('.date_ticket_release').removeClass("hidden");
+        }
+    }
+</script>
+
+{% endblock scripts %}

@@ -1,0 +1,231 @@
+{% extends "layout.html" %}
+{% block content %}
+<h1 style="text-align: center;">{{host.long_name}} <img src="/static/{{host.image}}?v={{ date }}" class="host-top-image" alt=""></h1>
+
+<hr>
+
+<div class="row justify-content-center">
+
+  <div class="host-event-cards">
+    <div class="card shadow-sm" style="width: 20rem;">
+      <div class="image-wrapper" style="position: relative; padding-bottom: 56.25%;">
+        <img class="card-img-top" style="position: absolute; object-fit: cover; width: 100%; height: 100%;" src="/static/{{event.image}}" alt="Card image cap">
+      </div>
+      <div class="card-body date-badge" style="text-align: left;">
+          <h5 class="card-title"><a style="color: #444444;" href="/event/{{event.id}}" class="text-reset">{{event.name}}</a>
+          <p class="font-weight-light date" style="font-size: 90%;">{{event.date_start.day}} <span class="month" style="font-size: 100%;">{{event.date_start.month}}</span> {{event.date_start.year}}</p></h5>
+      </div>
+    </div>
+  </div>
+</div>
+<br>
+  <div class="row justify-content-center">
+    <a class="btn btn-secondary mb-1" style="margin: 3px;" href="/hostAdmin/ticket_sale/{{event.id}}" role="button">Biljettförsäljning</a>
+    <a class="btn btn-secondary mb-1" style="margin: 3px;" href="/hostAdmin/edit_event/{{event.id}}" role="button">Ändra event</a>
+    
+    <a class="btn btn-danger mb-1 text-white" style="margin: 3px;" role="button" data-toggle="modal" data-target="#eraseEvent">Radera event</a>
+    <div class="modal fade" id="eraseEvent" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Radera event</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            Är du säker på att du vill radera eventet?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Avbryt</button>
+            <a type="button" class="btn btn-danger text-white" href="/api/hostAdmin/remove_event/{{event.id}}" role="button">Radera event</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <br>
+  <br>
+
+
+<h3 style="text-align: center;">Biljetter</h3>
+<hr>
+
+  {% for ticket in event.ticket_meta %}
+  <div class="card w-50 mx-auto shadow-sm">
+    <div class="card-body mx-auto">
+      <h5 class="card-title" style="text-align: center;">{{ticket.name}}</h5>
+      <div class="image-wrapper" style="position: relative; padding-bottom: 56.25%;">
+      <img class="card-img-top mx-auto" src="/static/{{ticket.image}}" style="position: absolute; object-fit: cover; width: 100%; height: 100%;" >
+    </div>
+ 
+    <br>
+    Biljettsläpp: {{event.date_ticket_sale.strftime('%Y-%m-%d kl %H:%M')}}
+    <br>
+                        Plats: 
+                        {{ticket.location}}
+    <br>
+    <br>
+    <table class="table table-sm">
+      <thead>
+        <tr>
+          <th scope="col">Biljettstatistik</th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td scope="row">Betalda</td>
+          <td>{{ ticket.sold_tickets() }}</td>
+        </tr>
+        <tr>
+          <td scope="row">Reserverade</td>
+          <td>{{ ticket.reserved_tickets() }}</td>
+        </tr>
+        <tr>
+          <td scope="row">Tillgängliga</td>
+          <td>{{ ticket.avaliable_tickets() }} </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <button class="btn btn-secondary mb-1" id="presale_button_{{ticket.id}}" data-target="#presaleTicketForm_{{ticket.id}}" data-toggle="collapse" type="button" aria-expanded="false" aria-controls="#presaleTicketForm_{{ticket.id}}">Förköp</button>
+    <a href="/admin/stats/{{ticket.id}}" class="btn btn-secondary mb-1">Insläppsstatistik</a>
+  </div>
+
+  <div id="accordion_{{ticket.id}}">
+    <div class="collapse multi-collapse" id="presaleTicketForm_{{ticket.id}}" name="{{ticket.id}}" data-parent="#accordion_{{ticket.id}}">
+      <hr>  
+      <div class="card-body">
+            <form method="POST" action="" id="ticketForm-{{ticket.id}}">
+                <div class="form-group">
+                  <label for="amount-{{ticket.id}}">Antal förköp <small>- {{ticket.avaliable_tickets()}} tillgängliga</small></label>
+                  <input min="1" type="number" name="amount-{{ticket.id}}" class="form-control" id="amount-{{ticket.id}}">
+                  <div class="invalid-feedback"></div>
+                </div>
+
+                <div class="form-group">
+                  <label for="email-{{ticket.id}}">Mottagare</label>
+                  <select name="email-{{ticket.id}}" class="form-control uid" style="width:100%" id="email-{{ticket.id}}"></select>
+                  <div class="invalid-feedback"></div>
+                </div>
+                    
+                    <button type="button" id="submitButton_{{ticket.id}}" class="btn btn-outline-info" onclick="reserve('{{ticket.id}}')">Ge förköp</button>
+                    
+            </form>
+        </div>         
+    </div>
+    
+    </div>
+  </div>
+  <br>
+
+  {% endfor %}
+
+  
+
+
+{% endblock content %}
+
+{% block head %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+{% endblock head %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+
+<script>
+
+$(document).ready(function(){
+    $(this).scrollTop(0);
+
+  $('.uid').each(function(){
+    $(this).select2({
+        ajax: {
+            url: '/api/getusers/',
+            type: 'GET',
+            dataType: 'json',
+            data: function (params) {
+                var query = {
+                    email: params.term
+                }
+                return query;
+            },
+            processResults: function (data) {
+                return {
+                    results: data.results
+                };
+            }
+        }
+    });
+
+ }); 
+});
+
+    function validateForm(id) {
+      console.log(id);
+        var ajax = $.ajax({
+            type: "POST",
+            url: "/api/hostAdmin/validateReserveForm/{{event.id}}",
+            data: $('#ticketForm-' + id).serialize(),
+            success: function(data) {
+                if (data == true) {
+    
+                    return(data);
+                } else {
+                    for (var error in data) {
+                        $("#" + error).parent().find(".invalid-feedback").html('<span>' + data[error] + '</span>');
+                        $("#" + error).addClass("is-invalid");
+                    }
+                }
+            }
+        });
+        return ajax;
+    };
+
+    function reserveTickets(id) {
+        $.ajax({
+            type: "POST",
+            url: "/api/hostAdmin/reservetickets/{{event.id}}",
+            data: $('#ticketForm-' + id).serialize(),
+            success: function(data) {
+                if (data == true) {
+                    $('input').not('input[type=radio]').each(function () {
+                        $(this).val("");
+                    });
+                    $('#presaleTicketForm_'+id).find('#email-'+id).val(null).trigger('change');
+                    $('#uid').val(null).trigger('change');
+                    location.reload();
+
+                    /* Bästa lösningen jag fått till, nu är problemet att flashen från python kommer in efter att 
+                    sidan laddats om, vilket fuckar upp */
+                    
+                    $(document).ready(function () {
+                      $(this).scrollTop(0);
+                    });
+
+                } else {
+                    for (var error in data) {
+                        $("#" + error).parent().append('<div class="invalid-feedback"><span>' + data[error] + '</span></div>');
+                    }
+                }
+            }
+        });
+    };
+
+
+    function reserve(id) {
+      var ajax = validateForm(id);
+        ajax.done(function () { 
+            if (ajax.responseJSON == true) {
+                reserveTickets(id);
+            }
+        });
+
+    };
+
+</script>
+
+{% endblock scripts %}

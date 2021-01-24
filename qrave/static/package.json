@@ -1,0 +1,18 @@
+{
+  "name": "static",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "easyqrcodejs": "^3.5.0",
+    "feather-icons": "^4.28.0",
+    "instascan": "^1.0.0",
+    "jsqr": "^1.2.0",
+    "webrtc-adapter": "^7.5.1"
+  }
+}

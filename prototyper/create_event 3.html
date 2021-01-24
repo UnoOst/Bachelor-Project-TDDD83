@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="manifest" href="/static/favicon/site.webmanifest">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/favicon/apple-touch-icon.png">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="site.css">
+    <title>QRave - Skapa event</title>
+
+    <style>
+        .is-hidden {
+            display: none;
+        }
+    </style>
+
+</head>
+
+<body>
+    <header class="site-header">
+        <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+            <div class="container">
+                <a class="navbar-brand mr-4" href="/">QRave</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle"
+                    aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarToggle">
+                    <div class="navbar-nav mr-auto">
+                        <a class="nav-item nav-link" href="/events/">Event</a>
+                    </div>
+                    <!-- Navbar Right Side -->
+                    <div class="navbar-nav">
+
+                        <a class="nav-item nav-link" href="/login/">Mina event</a>
+                        <a class="nav-item nav-link" href="/register/">Konto</a>
+                        <a class="nav-item nav-link" href="/login/">Logga ut</a>
+
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main role="main" class="container">
+        <div class="row">
+            <div class="col-12">
+                
+                <div class="row">
+                    <div class="col-lg-6 offset-lg-3">
+                        <div class="content-section">
+                        <h3>Skapa event</h3>
+                        <form id="msform">
+                            <!-- progressbar -->
+                            <div id="progress-bar">
+                                <div class="progress">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: 33%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <div class="progress d-none">
+                                    <div class="progress-bar progress-bar bg-success" role="progressbar" style="width: 66%" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <div class="progress d-none">
+                                    <div class="progress-bar progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                            <!-- fieldsets -->
+                            <fieldset>
+                                <h5 class="fs-title">Evenemangdetaljer</h5>
+                                    <label class="form-control-label" for="name">Evenemang</label>
+                                    <input class="form-control" id="name" name="name" type="text" value="">
+                                    <label class="form-control-label" for="liuid">Beskrivning</label>
+                                    <textarea class="form-control" id="liuid" name="liuid" rows="4"></textarea>
+                                    <label class="form-control-label" for="phone">Evenemangsbild</label>
+                                    <br>
+                                    <input class="form-control-label" id="phone" name="phone" type="file" value=""><br>
+                                    <label class="form-control-label" for="email">Startdatum</label>
+                                    <input class="form-control" id="email" name="email" type="datetime-local" value="">
+                                    <label class="form-control-label" for="email">Slutdatum</label>
+                                    <input class="form-control" id="email" name="email" type="datetime-local" value="">
+                                    <label class="form-control-label" for="email">Publikationsdatum</label>
+                                    <input class="form-control" id="email" name="email" type="datetime-local" value="">
+                                    <label class="form-control-label" for="email">Biljettsläpp</label>
+                                    <input class="form-control" id="email" name="email" type="datetime-local" value="">
+                                    <label class="form-control-label" for="password">Plats för biljettsläpp</label>
+                                    <input class="form-control" id="password" name="password"type="text" value="">
+                                    <label class="form-control-label" for="password">Medarrangörer</label>
+                                    <select multiple id="password" class="form-control">
+                                        <option value="volvo">CM</option>
+                                        <option value="saab">4V</option>
+                                        <option value="mercedes">FM</option>
+                                        <option value="audi">SM</option>
+                                      </select>
+                                    <br>
+                                    <input type="button" name="next" class="next btn btn-outline-info" value="Nästa"/>
+                            </fieldset>
+                            <fieldset class="form-group">
+                                <legend class="border-bottom mb-4">Biljettinfo</legend>
+                                <div id="subforms-container">
+                                <div id="lap-0-form" class="subform" data-index="0">
+                                    <h5>Biljett 1</h5>
+                                    <div class="form-check">
+                                        <input type="radio" class="form-check-input" id="exampleCheck1" value="123" checked>
+                                        <label class="form-check-label" for="exampleCheck1">Fysiskt släpp</label>
+                                    </div>
+
+                                    <div class="form-check">
+                                        <input type="radio" class="form-check-input" id="exampleCheck2" value="123">
+                                        <label class="form-check-label" for="exampleCheck1">Digitalt släpp</label>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="tickets-0-price">Biljettnamn</label><small class="text-muted"> - Namn på evenemanget som biljett går till</small>
+                                        <input class="form-control form-control-lg" id="tickets-0-price" name="tickets-0-price" type="text" value="">
+                                    </div>
+
+                                    <label class="form-control-label" for="tickets-0-description">Lokal</label>                    
+                                        <input class="form-control form-control-lg" id="tickets-0-description" name="tickets-0-description" type="text" value="">
+                                    
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="tickets-0-capacity">Kapacitet</label>    
+                                        <input class="form-control form-control-lg" id="tickets-0-capacity" name="tickets-0-capacity" type="text" value="">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="tickets-0-max_per_user">Köpgräns</label><small class="text-muted"> - Max antal biljetter en person kan köpa</small>                    
+                                        <input class="form-control form-control-lg" id="tickets-0-max_per_user" name="tickets-0-max_per_user" type="text" value="">                    
+                                        
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="tickets-0-price">Pris</label>
+                                        <input class="form-control form-control-lg" id="tickets-0-price" name="tickets-0-price" type="text" value="">
+                                    </div>
+                    
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="tickets-0-description">Beskrivning</label>                    
+                                        <input class="form-control form-control-lg" id="tickets-0-description" name="tickets-0-description" type="text" value="">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="phone">Biljettbild</label>
+                                        <br>
+                                        <input class="form-control-label" id="phone" name="phone" type="file" value=""><br>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="email">Startdatum</label>
+                                        <input class="form-control" id="email" name="email" type="datetime-local" value="">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="email">Slutdatum</label>
+                                        <input class="form-control" id="email" name="email" type="datetime-local" value="">
+                                    </div>
+                                    <hr>
+                                </div>
+                                </div>
+                                <a id="add" class="btn btn-outline-info">Lägg till biljett</a>
+                                <br>
+                                <hr>
+                                <input type="button" name="prev" class="prev btn btn-outline-info" value="Tillbaka"/>
+                                <input type="button" name="next" class="next btn btn-outline-info" value="Nästa"/>
+                            </fieldset>
+                            <fieldset>
+                                <legend class="border-bottom mb-4">Produktinfo<small class="text-muted"> - Även märken</small></legend>
+                                <h5 class="fs-title">Produkt 1</h5>
+                                <div class="form-group">
+                                    <label class="form-control-label" for="confirm_password">Produkt</label>
+                                    <input class="form-control" id="confirm_password" name="confirm_password" type="text" value=""> 
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-control-label" for="confirm_password">Pris</label>
+                                    <input class="form-control" id="confirm_password" name="confirm_password" type="text" value=""> 
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-control-label" for="confirm_password">Antal</label>
+                                    <input class="form-control" id="confirm_password" name="confirm_password" type="text" value=""> 
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-control-label" for="confirm_password">Beskrivning</label>
+                                    <input class="form-control" id="confirm_password" name="confirm_password" type="text" value=""> 
+                                </div>
+                                    
+                                    <label class="form-control-label" for="phone">Bild</label>
+                                    <br>
+                                    <input class="" id="phone" name="phone" type="file">
+                                    <br>
+                                    <br>
+                                    <input type="button" name="prev" class="prev btn btn-outline-info" value="Tillbaka"/>
+                                    <input type="submit" name="save" class="next btn btn-outline-info" value="Förhandsgranska event"/>
+                            </fieldset>
+                        </form>
+                    </div>
+
+                </div>
+        </div>
+
+
+        <div id="lap-_-form" class="is-hidden" data-index="_">
+            <h5>Biljett 1</h5>
+            <div class="form-group">
+                <label class="form-control-label" for="tickets-_-price">Pris</label>
+                <input class="form-control form-control-lg" id="tickets-_-price" name="tickets-_-price" type="text" value="">
+            </div>
+            <div class="form-group">
+                <label class="form-control-label" for="tickets-_-description">Beskrivning</label>
+                <input class="form-control form-control-lg" id="tickets-_-description" name="tickets-_-description" type="text"
+                    value="">
+            </div>
+            <div class="form-group">
+                <label class="form-control-label" for="tickets-_-capacity">Kapacitet</label>
+                <input class="form-control form-control-lg" id="tickets-_-capacity" name="tickets-_-capacity" type="text"
+                    value="">
+            </div>
+            <div class="form-group">
+                <label class="form-control-label" for="tickets-_-max_per_user">Max per köpare</label>
+                <input class="form-control form-control-lg" id="tickets-_-max_per_user" name="tickets-_-max_per_user"
+                    type="text" value="">
+            </div>
+            <div class="form-group">
+                <label class="form-control-label" for="tickets-_-date">Datum</label>
+                <input class="form-control form-control-lg" id="tickets-_-date" name="tickets-_-date" type="text" value="">
+            </div>
+            <hr>
+        </div>
+
+
+    </main>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+
+    <script>
+        var current_fs, next_fs, previous_fs; 
+        $(".next").click(function(){
+            current_fs = $(this).parent();
+	        next_fs = $(this).parent().next();
+            $(".progress").eq($("fieldset").index(next_fs)).removeClass("d-none");
+            $(".progress").eq($("fieldset").index(current_fs)).addClass("d-none");
+            current_fs.hide();
+            next_fs.show();
+        });
+
+        $(".prev").click(function(){
+            current_fs = $(this).parent();
+	        previous_fs = $(this).parent().prev();
+            $(".progress").eq($("fieldset").index(previous_fs)).removeClass("d-none");
+            $(".progress").eq($("fieldset").index(current_fs)).addClass("d-none");
+            previous_fs.show();
+            current_fs.hide();
+        });
+    </script>
+
+    <script>
+        function adjustIndices(removedIndex) {
+            var $forms = $('.subform');
+    
+            $forms.each(function (i) {
+                var $form = $(this);
+                var index = parseInt($form.attr('data-index'));
+                var newIndex = index - 1;
+    
+                if (index < removedIndex) {
+                    return true;
+                }
+    
+                replaceIndex($form, index, newIndex)
+            });
+        }
+    
+        function replaceIndex($form, oldIndex, newIndex) {
+            $form.attr('id', $form.attr('id').replace(oldIndex, newIndex));
+            $form.attr('data-index', newIndex);
+    
+            $form.find('input').each(function (j) {
+                var $item = $(this);
+                $item.attr('id', $item.attr('id').replace(oldIndex, newIndex));
+                $item.attr('name', $item.attr('name').replace(oldIndex, newIndex));
+            });
+
+            $form.find('h5').each(function (j) {
+                var $item = $(this);
+                $item.html("Biljett " + (newIndex+1));
+            });
+    
+            $form.find('label').each(function (j) {
+                var $item = $(this);
+                $item.attr('for', $item.attr('for').replace(oldIndex, newIndex));
+            });
+        }
+    
+        function removeForm() {
+            var $removedForm = $(this).closest('.subform');
+            var removedIndex = parseInt($removedForm.attr('data-index'));
+            $removedForm.remove();
+            adjustIndices(removedIndex);
+        }
+    
+        function addForm() {
+            var $lastForm = $('.subform').last();
+            var newIndex = 0;
+            if ($lastForm.length > 0) {
+                newIndex = parseInt($lastForm.attr('data-index')) + 1;
+            }
+    
+            var $newForm = $('#lap-_-form').clone();
+            replaceIndex($newForm, '_', newIndex)
+    
+            $('#subforms-container').append($newForm);
+            $newForm.addClass('subform');
+            $newForm.removeClass('is-hidden');
+            $newForm.find('.remove').click(removeForm);
+        }
+    
+    
+        $(document).ready(function () {
+            $('#add').click(addForm);
+            $('.remove').click(removeForm);
+        });
+    </script>
+
+
+</body>
+
+</html>

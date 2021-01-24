@@ -1,0 +1,82 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="col-lg-8 offset-lg-2">
+        <div class="content-section">
+            <form method="POST" action="">
+                {{ form.hidden_tag() }}
+                <fieldset class="form-group">
+                    <legend class="border-bottom mb-4">Skapa konto</legend>
+                    {% for field in form %}
+                    {% if field.type == "SubmitField" or field.type == "BooleanField" or field.flags.hidden %}
+                    {% else %}
+                    <div class="form-group">
+                        {{ field.label(class="form-control-label") }}
+                        {% if not field.flags.required %}<small class="text-muted"> - Valfri</small>{% endif %}
+                        {% if field.errors %}
+                        {{ field(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in field.errors %}
+                            <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                            {{ field(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </fieldset>
+                <div class="form-check">
+                    {{ form.accept_terms(class="form-check-input") }}
+                    {{ form.accept_terms.label(class="form-check-label") }}
+                    <a data-toggle="modal" data-target="#myModal" href="{{ url_for('main.terms') }}">användarvillkoren.</a>
+                    <!-- Modal -->
+                    <div class="modal fade" id="myModal" role="dialog">
+                        <div class="modal-dialog">
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h3 class="modal-title">Användarvillkor</h3>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <h5>Vid användande av denna webbapplikation och dess tjänster accepteras följande villkor. Om du ej accepterar eller
+                                    inte vill bli bunden av dessa villkor
+                                    bör QRave's tjänster inte användas.</h5>
+                                  <hr>
+                                  <ol type="i">
+                                    <li>Vid skapande av konto ansvarar kunden för att all information som anges är korrekt. </li>
+                                    <li>Kunden är själv ansvarig för att användarnamn och lösenord hålls hemligt. Kunden är ansvarig för eventuella köp
+                                      och/eller andra handlingar som sker på kundens konto
+                                      även om det sker av en obehörig person.
+                                    </li>
+                                    <li>Vid köp av evenemangsbiljett gäller ingen ångerrätt, detta i enlighet med Distansavtalslagen (2005:59) 2 kap.
+                                      §11.</li>
+                                    <li>QRave är ej ansvariga för evenemang som publiceras på QRave's webbsida eller att den information som presenteras
+                                      om evenmanget är korrekt.
+                                      Utan respektive arrangör är fullt ansvariga för sina evenemang.</li>
+                                    <li>QRave förbehåller sig rätten att makulera köp och stänga av konton i händelse av att kunden bryter mot dessa
+                                      villkor.</li>
+                                    <li>QRave förebehåller sig rätten att ändra dessa villkor, de uppdaterade villkoren kommer därefter publiceras på denna sida.</li>
+                                  </ol>
+                            </div>
+                            <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-info" data-dismiss="modal">Stäng</button>
+                            </div>
+                        </div>
+                        
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="form-group">
+                    {{ form.submit(class="btn btn-outline-info") }}
+                </div>
+            </form>
+        </div>
+        <small class="text-muted">
+            Har du redan ett konto? <a class="ml-2" href="{{ url_for('users.login') }}">Logga in</a>
+        </small>
+    
+    </div>
+{% endblock content %}

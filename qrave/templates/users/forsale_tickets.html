@@ -1,0 +1,84 @@
+{% extends "layout.html" %}
+{% block content %}
+
+    {% if tickets|length > 0 %}
+    <h1 style="text-align: center;">Försäljning</h1>
+    <hr>
+    {% for ticket in tickets %}
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8 col-xl-7">
+            <div class="card shadow-sm">
+                <br>
+                <div class="flip-card d-flex justify-content-center">
+                    <img class="card-img-top mt-4 rounded" style="max-height: 250px; max-width: 350px; opacity: 0.3;" src="/static/{{ticket.meta.image}}">
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-3 date-badge">
+                            <h2>
+                                <span class="month">{{ticket.meta.date_start.month}}</span>
+                                <br>
+                                <span class="date">{{ticket.meta.date_start.day}}</span>
+                            </h2>
+                        </div>                                
+                        <div class="col-8">
+                            <h5><a style="color: black;" href="/event/{{ticket.meta.event.id}}">{{ticket.meta.name}} - {{ticket.meta.date_start.year}}</a></h5>
+                            <p class="card-text">
+                                <i data-feather="map-pin"></i> {{ticket.meta.location}}
+                            </p>
+                            <p class="card-text">Utlagd för försäljning: {{ticket.date_for_sale.strftime("%Y-%m-%d kl %H:%M")}}</p>
+                            <button class="btn btn-info" id="sell_button_{{ticket.id}}" data-target="#sellTicketForm_{{ticket.id}}" data-toggle="collapse" type="button" aria-expanded="false" aria-controls="#sellTicketForm_{{ticket.id}}">Ångra försäljning</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="accordion_{{ticket.id}}">
+                    <div class="collapse multi-collapse" id="sellTicketForm_{{ticket.id}}" data-parent="#accordion_{{ticket.id}}">
+                        <hr>
+                        <div class="card-body">
+                            <form method="POST" id="sellForm">
+                                    <div class="form-group">
+                                        <input type="hidden" name="id" class="form-control" id="id" value={{ticket.id}}>
+                                        <p>Om du drar tillbaka din försäljning förlorar du din köplats i försäljningskön.</p>
+                                    </div>
+                                    <div class="form-group">
+                                        <button type="button" id="sellButton{{ticket.id}}" class="btn btn-outline-info sellButton">Ångra försäljning!</button>
+                                    </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <br>
+    {% endfor %}
+    {% else %}
+    <h1 style="text-align: center;">Du har inga biljetter utlagda för försäljning</h1>
+    <hr>
+    <h3 style="text-align: center;"><a style="color:gray;" href="/events/">Se kommande event</a></h3>
+    {% endif %}
+
+{% endblock content %}
+
+{% block scripts %}
+<script>
+    $('.sellButton').click(function () {
+        sellticket($(this).closest('form'));
+    });
+
+    function sellticket() {
+        $.ajax({
+            type: "POST",
+            url: "/api/undoticketsale/",
+            data: $('form').serialize(),
+            success: function(data) {
+            if (data == true) {
+                    window.scrollTo(0, 0);
+                    location.reload();
+                }
+            }
+        });
+    }
+</script>
+{% endblock scripts %}

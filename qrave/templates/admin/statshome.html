@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block content %}
+<h1 class="text-center">Eventhistorik</h1>
+<br>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Event</th>
+            <th scope="col">Datum</th>
+            <th scope="col">Statistik</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for event in events %}
+        <tr>
+            <td>{{event.name}}</td>
+            <td>{{event.date_start.date()}}</td>
+            <td>
+                {% for meta in event.ticket_meta %}
+                <a href="/admin/stats/{{meta.id}}">{{meta.name}}</a><br>
+                {% endfor %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock content %}

@@ -1,0 +1,169 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h1 style="text-align: center;">{{host.long_name}} <img src="/static/{{form.image.data}}?v={{ date }}" class="host-top-image" alt=""></h1>
+
+<hr>
+<h3 style="text-align: center;">Kontodetaljer</h3>
+<div class="content-section shadow-sm col-md-6 offset-md-3">
+  <form method="POST" id="myForm" enctype="multipart/form-data">
+      {{ form.hidden_tag() }}
+      <fieldset class="form-group">
+        
+        <div class="form-group">
+          {{ form.name.label(class="form-control-label") }}
+          {% if form.name.errors %}
+              {{ form.name(class="form-control form-control-lg is-invalid") }}
+              <div class="invalid-feedback">
+                {% for error in form.name.errors %}
+                <span>{{ error }}</span>
+                  {% endfor %}
+              </div>
+          {% else %}
+              {{ form.name(class="form-control form-control-lg") }}
+          {% endif %}
+        </div>
+        
+        <div class="form-group">
+          {{ form.short_name.label(class="form-control-label") }}
+          {% if form.short_name.errors %}
+              {{ form.short_name(class="form-control form-control-lg is-invalid") }}
+              <div class="invalid-feedback">
+                {% for error in form.short_name.errors %}
+                <span>{{ error }}</span>
+                  {% endfor %}
+              </div>
+          {% else %}
+              {{ form.short_name(class="form-control form-control-lg") }}
+          {% endif %}
+        </div>
+        <hr>
+          
+        <div class="form-group">
+          {{ form.description.label(class="form-control-label") }}
+          {% if form.description.errors %}
+              {{ form.description(class="form-control form-control-lg summernote is-invalid") }}
+              <div class="invalid-feedback">
+                  {% for error in form.description.errors %}
+                      <span>{{ error }}</span>
+                  {% endfor %}
+              </div>
+          {% else %}
+              {{ form.description(class="form-control form-control-lg summernote") }}
+          {% endif %}
+        </div>
+        <hr>
+        <div class="form-group">
+          {{ form.image.label(class="form-control-label") }}<br>
+          <div class="row">
+            <div class="col-6">
+                <img src="/static/{{form.image.data}}?v={{ date }}" id="profile-img" class="host-image">
+            </div>
+          </div>
+          <br>
+          <div class="input-group mb-3" style="width: 100%;">
+            <input type="text" class="form-control" disabled placeholder="Ändra profilbild" id="file">
+              <div class="input-group-append">
+                  {{ form.image(accept="image/*", style="visibility: hidden; position: absolute;") }}
+                  <button type="button" class="browse btn btn-info" id="button-choose-img">Välj...</button>
+                  <button type="button" class="remove btn btn-danger" id="button-delete-img" onclick="defaultImg()">Ta bort</button>
+              </div>
+          </div>
+        </div>
+
+        <br>
+
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info", id="submit") }} 
+        </div>
+
+      </fieldset>
+  </form>
+</div>
+
+{% endblock content %}
+
+{% block head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/css/bootstrap-select.min.css">
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.16/dist/summernote-bs4.min.css" rel="stylesheet">
+{% endblock head %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.16/dist/summernote-bs4.min.js"></script>
+
+<!-- Document ready -->
+<script>
+$(document).ready(function () {
+
+  $('.summernote').each(function (j) {
+      $(this).summernote('destroy');
+
+      $(this).summernote({
+          height: 200,
+          toolbar: [
+          ['style', ['bold', 'italic', 'underline', 'clear']],
+          ['font', ['strikethrough', 'superscript', 'subscript']],
+          ['para', ['ul', 'ol', 'paragraph']],
+          ['misc', ['undo', 'redo']]
+        ]});
+  });
+
+  $('input[type="file"]').each(function (j) {
+      $(this).change( function(e) {
+          displayImage(e);
+      });
+  });
+
+  $(".browse").first().click(openFileDialog);
+
+  $("#myForm").submit(function (e) {
+    if ($("#image").first().attr('del') == 'true') {
+      $.ajax({
+        url: '/hostAdmin/account/defaultprofile/{{host.id}}',
+        type: 'DELETE',
+        success: function () {
+          $("#myForm").submit();
+        }
+      });
+    } else {
+      $("#myForm").submit();
+    }
+  });
+
+});
+</script>
+
+<script>
+function defaultImg() {
+  var img = document.getElementById('profile-img');
+  src = "/static/images/defaultProfile.jpg";
+  $("#profile-img").first().attr("src", src);
+  //$(".host-top-image").first().attr("src", src);
+  $("#file")[0].value = "";
+  $("#image")[0].value = "";
+  $("#image").first().attr('del', true);
+};
+
+function displayImage(e) {
+  var fileName = e.target.files[0].name;
+  var $formgroup = $(e.target).parents("div.form-group").first();
+  
+  $formgroup.find('input[type="text"').first().val(fileName);
+  var reader = new FileReader();
+  
+  reader.onload = function(f) {
+    $formgroup.find("img").first().attr("src", f.target.result);
+    $(".host-top-image").first().attr("src", f.target.result);
+  };
+  reader.readAsDataURL(e.target.files[0]);
+  $("#image").first().attr('del', false);
+};
+
+function openFileDialog() {
+      var file = $(this).siblings('input[type="file"]').first();
+      file.trigger("click");
+};
+
+</script>
+
+{% endblock scripts %}

@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h1 style="text-align: center;">Kontakta oss!</h1>
+<hr>
+<div class="container" style="padding-bottom:75px;">
+    <div class="row">
+        <div class="col-md-6 text-center">
+            <p> Vid eventuella frågor är ni varmt välkomna att kontakta oss antingen via formuläret eller via
+                kontaktuppgifterna som anges nedan.
+                Vid frågor som är specifika för en viss arrangör vänligen kontakta arrangören direkt.
+                <br><br>
+                För att hitta kontaktuppgifterna till alla arrangörer som använder QRave vänligen klicka på denna länk. --> 
+                <a href="{{ url_for('main.hosts') }}">Klicka här!</a></p> 
+            <div class="row">
+                <div class="col-md text-center">
+                    <a href="mailto:qrave.noreply@gmail.com">qrave.noreply@gmail.com</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md text-center">
+                    <a href="tel:+46701234567">070 - 123 45 67</a>
+                </div>
+            </div>
+            
+        </div>
+        <div class="col-md-6">
+           
+            <form method="POST" action="" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+                <fieldset class="form-group">
+                    {% for field in form %}
+                    {% if field.type == "SubmitField" or field.flags.hidden %}
+                    {% else %}
+                    <div class="form-group">
+                        {{ field.label(class="form-control-label") }}
+                        {% if field.errors %}
+                            {{ field(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in field.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ field(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </fieldset>
+                <div class="form-group">
+                    {{ form.submit(class="btn btn-outline-info") }}
+                </div>
+            </form>
+        
+    </div>
+ 
+</div>
+{% endblock content %}

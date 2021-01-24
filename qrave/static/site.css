@@ -1,0 +1,355 @@
+/* GENERAL */
+
+body {
+  background: white;
+  margin-top: 57.8px;
+  margin-bottom: 25rem;
+}
+
+main {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+.bg-steel {
+  background-color: #384650 !important;
+  box-shadow: 0 .125rem 0.2rem rgba(0,0,0,.5)!important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #444444;
+}
+
+.bg-steel {
+  background-color: #596167;
+}
+
+.content-section {
+  background: #ffffff;
+  padding: 10px 20px;
+  border: 1px solid #dddddd;
+  border-radius: 3px;
+  margin-bottom: 20px;
+  box-shadow: 0 .125rem .25rem rgba(0,0,0,.075)!important;
+}
+
+#loadingMessage {
+  text-align: center;
+  padding: 40px;
+  background-color: #eee;
+  margin: auto;
+}
+
+/* FOOTER */
+footer {
+  padding: 15px;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  height: 24rem;
+  z-index: 100;
+}
+
+.footer-link {
+  color: #444444;
+}
+
+@media (max-width: 576px) {
+  .footer {
+    -ms-flex-preferred-size: 0;
+    flex-basis: 0;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+    max-width: 100%;
+  }
+}
+
+footer li {
+  margin-bottom: 1rem;
+}
+
+footer ul {
+  list-style: none;
+  /* Fix for google chrome standard som offsettar vår footer från center */
+  padding-inline-start: 0px;
+}
+
+.footer-link:hover {
+  color: #333333;
+}
+
+.site-footer {
+  background-color: #e5e3dd;
+  box-shadow: inset 0 .125rem 0.5rem rgba(0,0,0,.2)!important;
+}
+
+/* HEADER */
+.site-header .navbar-nav .nav-link {
+  color: #cbd5db;
+}
+
+.site-header .navbar-nav .nav-link:hover {
+  color: #ffffff;
+}
+
+.site-header .navbar-nav .nav-link.active {
+  font-weight: 500;
+}
+
+.navbar-brand {
+  padding-bottom: 0px !important;
+  padding-top: 0px !important;
+}
+
+/* ACCOUNT */
+.account-img {
+  height: 125px;
+  width: 125px;
+  margin-right: 20px;
+  margin-bottom: 16px;
+}
+
+.account-heading {
+  font-size: 2.5rem;
+}
+
+/* EVENT */
+.date-badge .date {
+  font-weight: 300 !important;
+}
+
+.date-badge .month {
+  color: #dc3545 !important;
+  font-size: 60%;
+  font-weight: 300 !important;
+}
+
+.date-badge {
+  text-align: center;
+}
+
+/* SKAPA EVENT FORM */
+#createeventform fieldset:not(:first-of-type) {
+  display: none;
+}
+
+.hidden {
+  display: none;
+}
+
+/* FLIP CARD */
+.flip-card {
+  perspective: 1000px;
+}
+
+.available-tickets {
+  position: relative;
+  animation-name: show_qr;
+  animation-duration: 1.5s;
+  animation-iteration-count: 1;
+  animation-delay: 0.25s;
+}
+
+@keyframes show_qr {
+  0%   {transform: rotateY(0deg); transform-style: preserve-3d;}
+  25%  {transform: rotateY(20deg); transform-style: preserve-3d;}
+  50%  {transform: rotateY(0deg); transform-style: preserve-3d;}
+  75% {transform: rotateY(20deg); transform-style: preserve-3d;}
+  100%  {transform: rotateY(0deg); transform-style: preserve-3d;}
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 350px;
+  height: 260px;
+  text-align: center;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+}
+
+.flip-card.flipped .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front, .flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden; /* Safari */
+  backface-visibility: hidden;
+}
+
+.flip-card-back {
+  transform: rotateY(180deg);
+}
+
+/* HOST's EVENTS */
+.host-event-cards {
+  padding: 0.5rem;
+}
+
+.host-top-image {
+  margin: auto;
+  height: 40px;
+  position: center;
+}
+
+.host-image {
+  height: 100px;
+}
+
+
+/* Move event-card-group to the middle */
+.card-group {
+  margin: auto;
+  width: 80%;
+  padding: 10px;
+}
+
+/* Sidenavbar */
+
+/* change the color of active or hovered links */
+.sidebar-sticky .nav-link:focus,  .sidebar-sticky .nav-link:hover {
+  color: #222121;
+}
+
+.sidebar {
+  box-shadow: 1px 0 4px rgba(0, 0, 0, .1);
+  background-color: #fafafa;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  padding-top: 56px;
+  z-index: 50;
+  padding-right: 0;
+}
+
+.sidebar-sticky {
+  position: sticky;
+  position: -webkit-sticky;
+  height: calc(100vh - 56px - 18rem);
+  padding-top: 2rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+  width: 100%;
+}
+
+.sidebar .nav-link {
+  font-weight: 400;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.sidebar .nav-link.active {
+  font-weight: 500;
+  color: #333;
+  background-color: rgb(229,229,229);
+}
+
+.sidebar .nav-link.active svg {
+  stroke: #FFBA00;
+}
+
+.sidebar .nav-link.active svg.history {
+  stroke: #FFBA00;
+  fill: #FFBA00;
+}
+
+.sidebar .nav-link.active:hover {
+  background-color: rgb(217,217,217);
+}
+
+.sidebar .nav-link:hover {
+  background-color: rgb(242,242,242);
+}
+
+.sidebar.toggled ~ .sidebar-toggle {
+  transition: 0.3s;
+  left: 215px;
+}
+
+.sidebar.toggled {
+  transition: 0.3s;
+  display: block;
+  width: 215px;
+  left: 0px;
+}
+
+.sidebar.toggled ~ main {
+  transition: 0.3s;
+  margin-left: 215px;
+}
+
+.sidebar-toggle {
+  transition: 0.3s;
+  left: 0px;
+  z-index: 10;
+  position: fixed;
+  top: 70px;
+  display: none;
+}
+
+#show-sidebar {
+  border-radius: 0 4px 4px 0px;
+  background-color: #FFBA00;
+  border-color: #FFBA00;
+}
+
+#show-sidebar:focus {
+  box-shadow: none;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    left: -215px;
+    width: 0px;
+  }
+  .sidebar-toggle {
+    display: block;
+  }
+}
+
+/* SELECT2 fix */
+.select2-container {
+  width: 100% !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+  line-height: 24px !important;
+}
+
+/* modal något nerskjuten från topp */
+.modal-dialog {
+  top: 25%;
+}
+
+@media (max-width: 767px) {
+  .sellModal {
+    position: absolute;
+  }
+  .transferModal {
+    position: absolute;
+  }
+}
+
+@media (max-width: 500) {
+  .sellModal {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+  .transferModal {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+}

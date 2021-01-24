@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="Biljettförsäljning, av studenter för studenter">
+  <meta name="keywords" content="QRave">
+  <meta name="author" content="QRave">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  
+  <link rel="apple-touch-icon" sizes="180x180" href="/static/meta/icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/meta/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/static/meta/icons/favicon-16x16.png">
+  <link rel="manifest" href="/static/meta/site.webmanifest">
+  <link rel="mask-icon" href="/static/meta/icons/safari-pinned-tab.svg" color="#ffb52c">
+  <link rel="shortcut icon" href="/static/meta/icons/favicon.ico">
+  <meta name="msapplication-TileColor" content="#2b5797">
+  <meta name="msapplication-TileImage" content="/static/meta/icons/mstile-144x144.png">
+  <meta name="msapplication-config" content="/static/meta/browserconfig.xml">
+  <meta name="theme-color" content="#fafafa">
+
+  <!-- Bootstrap CSS -->
+  <script src="https://unpkg.com/feather-icons"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='site.css') }}">
+  
+  {% block head %}
+  {% endblock %}
+
+  {% if title %}
+  <title>QRave -  {{ title }}</title>
+  {% else %}
+  <title>QRave</title>
+  {% endif %}
+</head>
+
+<body>
+  <header class="site-header">
+    <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+      <div class="container">
+        <a class="navbar-brand mr-4" style="font-weight: 200; color: #cbd5db" href="/">
+          <img style="width:2rem; margin-right: 15px; padding-bottom: 5px" src="/static/meta/icons/android-chrome-192x192.png">QRave</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle"
+          aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarToggle">
+          <div class="navbar-nav mr-auto">
+            <a class="nav-item nav-link" href="{{ url_for('main.events') }}">
+              <i data-feather="calendar" style="width: 15px; padding-bottom: 4px; margin-right: 5px"></i>
+              Event
+            </a>
+          </div>
+          <!-- Navbar Right Side -->
+          <div class="navbar-nav">
+            {% if current_user.is_authenticated %}
+ 
+              {% if current_user.is_admin() %}
+                <a class="nav-item nav-link" href="/admin/stats/">
+                  <i data-feather="settings" style="width: 15px; padding-bottom: 4px; margin-right: 3px"></i>
+                  Admin</a>
+                <a class="nav-link" href="/account/">
+                  <i data-feather="user" style="width: 15px; padding-bottom: 4px; margin-right: 3px"></i>
+                  Konto</a>
+              {% endif %}
+ 
+              
+              {% if not current_user.is_admin() %}
+              <a class="nav-item nav-link" href="{{ url_for('users.account') }}">
+                <i data-feather="user" style="width: 15px; padding-bottom: 4px; margin-right: 3px"></i>
+                Mitt konto
+              </a>
+              <a class="nav-link" href="{{ url_for('users.tickets') }}">
+                <i data-feather="layers" style="width: 15px; padding-bottom: 4px; margin-right: 3px"></i>
+                Mina biljetter</a>
+                
+              {% endif %}
+
+              {% if current_user.is_host() %}
+                {% if current_user.hosts|length > 1 %}
+                  <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="hostDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <i data-feather="users" style="width: 15px; padding-bottom: 4px; margin-right: 3px"></i>Arrangörer
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="hostDropdown">
+                      {% for host in current_user.hosts %}
+                        <a class="dropdown-item" href="/hostAdmin/{{host.id}}">{{host}}</a>
+                      {% endfor %}
+                    </div>
+                  </li>
+                {% else %}
+                  <a class="nav-item nav-link" href="/hostAdmin/{{current_user.hosts[0].id}}">
+                    <i data-feather="users" style="width: 15px; padding-bottom: 4px; margin-right: 3px"></i>
+                    {{current_user.hosts[0]}}</a>
+                {% endif %}
+              {% endif %}
+              
+
+              <a class="nav-item nav-link" href="{{ url_for('users.logout') }}">
+                <i data-feather="log-out" style="width: 15px; padding-bottom: 4px;margin-right: 3px"></i>
+                Logga ut</a>
+            {% else %}
+            <a class="nav-item nav-link" href="{{ url_for('users.register') }}">
+              <i data-feather="user-plus" style="width: 15px; padding-bottom: 4px; margin-right: 3px"></i>
+              Skapa konto</a>
+              <a class="nav-item nav-link" href="{{ url_for('users.login') }}">
+                <i data-feather="log-in" style="width: 15px; padding-bottom: 4px; margin-right: 3px"></i>
+                Logga in</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+  <div class="container-fluid">
+  <div class="row">
+    <!-- Left-side-navbar : Admin and Hosts pages -->
+  {% if admin_sidenav %}
+  <nav class="nav sidebar col-md-3 col-lg-2">
+    <div class="sidebar-sticky">
+      <a class="nav-link" href="/admin/stats/"><i data-feather="bar-chart-2" style="width: 15px; padding-bottom: 2px; margin-right: 18px"></i>Statistik</a>
+      <a class="nav-link" href="/admin/scan/"><i data-feather="camera" style="width: 15px; padding-bottom: 2px; margin-right: 18px"></i>Scanning</a>
+      <a class="nav-link" href="/admin/"><i data-feather="database" style="width: 15px; padding-bottom: 2px; margin-right: 18px"></i>Systemadministration</a>
+    </div>
+  </nav>
+  <div class="sidebar-toggle">
+    <a id="show-sidebar" class="btn btn-sm btn-dark" href="#"><i data-feather="menu"></i></a>
+  </div>
+  {% endif %}
+  {% if host_sidenav %}
+  <nav class="nav sidebar col-md-3 col-lg-2">
+    <div class="sidebar-sticky">
+      <a class="nav-link" href="/hostAdmin/{{host.id}}"><i data-feather="edit" style="width: 15px; padding-bottom: 2px; margin-right: 18px"></i> Hantera event</a>
+      <a class="nav-link" href="/hostAdmin/create_event/{{host.id}}"><i data-feather="plus" style="width: 15px; padding-bottom: 2px; margin-right: 18px"></i> Skapa event</a>
+      <a class="nav-link" href="/hostAdmin/account/{{host.id}}"><i data-feather="sliders" style="width: 15px; padding-bottom: 2px; margin-right: 18px"></i> Kontodetaljer {{ host.short_name }}</a>
+    </div>
+  </nav>
+  <div class="sidebar-toggle">
+    <a id="show-sidebar" class="btn btn-sm btn-dark" href="#"><i data-feather="menu"></i></a>
+  </div>
+  {% endif %}
+  {% if ticket_sidenav %}
+  <nav class="nav sidebar col-md-3 col-lg-2">
+    <div class="sidebar-sticky">
+      <a class="nav-link" href="{{ url_for('users.tickets') }}"><i data-feather="tag" style="width: 15px; padding-bottom: 2px; margin-right: 18px"></i> Biljetter</a>
+      <a class="nav-link" href="{{ url_for('users.reservedtickets') }}"><i data-feather="gift" style="width: 15px; padding-bottom: 2px; margin-right: 18px"></i> Förköp</a>
+      <a class="nav-link" href="{{ url_for('users.forsaletickets') }}"><i data-feather="send" style="width: 15px; padding-bottom: 2px; margin-right: 18px"></i> Försäljning</a>
+      <a class="nav-link" href="{{ url_for('users.usedtickets') }}"><svg style="padding-bottom: 3px; margin-right: 18px; width: 18px;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke="currentColor" class="feather feather-home history" stroke-width="0"><path d="M11.9 3.75c-4.55 0-8.23 3.7-8.23 8.25H.92l3.57 3.57.04.13 3.7-3.7H5.5c0-3.54 2.87-6.42 6.42-6.42 3.54 0 6.4 2.88 6.4 6.42s-2.86 6.42-6.4 6.42c-1.78 0-3.38-.73-4.54-1.9l-1.3 1.3c1.5 1.5 3.55 2.43 5.83 2.43 4.58 0 8.28-3.7 8.28-8.25 0-4.56-3.7-8.25-8.26-8.25zM11 8.33v4.6l3.92 2.3.66-1.1-3.2-1.9v-3.9H11z"></path></svg>Historik</a>
+      
+     
+    </div>
+  </nav>
+  <div class="sidebar-toggle">
+    <a id="show-sidebar" class="btn btn-sm btn-dark" href="#"><i data-feather="menu"></i></a>
+  </div>
+
+  {% endif %}
+
+
+  {% if host_sidenav or admin_sidenav or ticket_sidenav %}
+  <main role="main" class="container col-lg-10 offset-lg-2 col-md-9 offset-md-3">
+  {% else %}
+  <main role="main" class="container col-md-8">
+  {% endif %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">
+          {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+        {% block content %}
+        {% endblock %}
+  </main>
+</div>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+
+  <div class="py-3 text-center">
+    <ul class="justify-content-center align-items-center text-center">
+    
+      <li list-style-type="none">
+        <a class="footer-link" href="{{ url_for('main.hosts') }}">
+          <i data-feather="heart" style="width: 15px; padding-bottom: 2px;"></i>
+          Arrangörer
+        </a>
+      </li>
+        <li list-style-type="none">
+          <a class="footer-link" href="{{ url_for('main.about') }}">
+            <i data-feather="info" style="width: 15px; padding-bottom: 2px;"></i>
+            Om oss
+          </a>
+        </li>
+        <li>
+          <a class="footer-link" href="{{ url_for('main.contact') }}">
+            <i data-feather="message-circle" style="width: 15px; padding-bottom: 2px;"></i>
+            Kontakt
+          </a>
+        </li>
+        <li>
+          <a class="footer-link" href="{{ url_for('main.faq') }}">
+            <i data-feather="help-circle" style="width: 15px; padding-bottom: 2px;"></i>
+            Vanliga frågor
+          </a>
+        </li>
+        <li>
+          <a class="footer-link" href="{{ url_for('main.terms') }}">
+            <i data-feather="file-text" style="width: 15px; padding-bottom: 2px;"></i>
+            Villkor
+          </a>
+        </li>
+        <li>
+          
+          <a class="footer-link" href="https://www.instagram.com/qraveliu/" style=" padding-right: 7px">
+            <i data-feather="instagram"></i></a>
+          <a class="footer-link" href="https://www.facebook.com/qraveliu/">
+            <i data-feather="facebook"></i>
+          </a>
+        </li>
+        <li>
+          <a class="footer-link">Copyright © 2020
+            <a class="footer-link" href="{{ url_for('main.home') }}"> <b>QRave.se</b></a>
+          </a>
+        </li>
+        <li>
+          <a class="footer-link"  href="https://www.swish.nu/"><img src="/static/images/Swish_QRave.png" style="height: 30px; padding-right:20px"></a>
+          <a class="footer-link"><img src="/static/images/KK_footer.png" style="height: 30px; padding-right:20px"></a>
+          <a class="footer-link"><img src="/static/images/Karallen_footer.png" style="height: 30px; padding-right:20px"></a>
+          <a class="footer-link"><img src="/static/images/hg_footer.png" style="height: 30px; padding-right:20px"></a>
+          <a class="footer-link"><img src="/static/images/flamman_footer.png" style="height: 30px; padding-right:20px"></a>
+        </li>
+      </ul>
+  </div>
+</footer>
+<!-- END FOOTER -->
+
+
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+    integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    
+  <script>
+    $(document).ready(function () {
+      $("a[href='{{request.path}}']").addClass("active");
+      $('#show-sidebar').click(function () {
+        $('.sidebar').toggleClass('toggled');
+      });
+      $(window).resize(function(){
+        if ($(window).width() > 768) {  
+          $('.sidebar').removeClass('toggled');
+        }
+      });
+    });
+  </script>
+  <script>
+    $(".month").each(function(){
+      var months = ["Jan", "Feb", "Mar", "Apr", "Maj", 
+                    "Jun", "Jul", "Aug", "Sep", "Okt", 
+                    "Nov", "Dec"];
+      
+      $(this).text(months[parseInt($(this).text()) - 1])
+    });
+  </script>
+  <script>
+    feather.replace()
+  </script>
+  {% block scripts %}
+  {% endblock %}
+</body>
+
+</html>

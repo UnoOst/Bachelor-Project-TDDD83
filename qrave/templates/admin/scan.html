@@ -1,0 +1,108 @@
+{% extends "layout.html" %}
+
+{% block head %}
+<script type="text/javascript" src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
+{% endblock head %}
+
+{% block content %}
+<h2 class="text-center">Biljettscanning</h2>
+<div class="alert hidden" id="status">
+</div>
+
+<div id="row align-items-center">
+  <div class="form-group">
+    <div id='log' class="form-control" rows=10 style="width: 100%; max-height: 200px; height:200px; overflow-y: scroll; " readonly></div>
+  </div>
+  <div class="preview-container" style="position:relative">
+    <div id="loadingMessage">🎥 Hittade ingen webkamera, se till att din kamera tillåts av webläsaren</div>
+    <div id="buttons" hidden="true" style="position: absolute;top: 0; z-index: 100; ">
+      <button class="btn btn-sm btn-primary" style="border-bottom-left-radius: 0px;border-top-left-radius: 0px;border-top-right-radius: 0px;" onclick="switch_camera()">🔄Byt kamera</button>
+    </div>
+    <video playsinline autoplay='autoplay' style="width:100%" id="preview" hidden="true"></video>
+  </div>
+  <div style="padding-top: 5%;">
+      <div class="input-group">
+        <input class="form-control" id="manuel_qr" placeholder="Qrkod">
+        <div class="input-group-append">
+          <button type="submit" class="btn btn-primary" onclick="manuel_qrcode()">Använd biljett</button>
+        </div>
+      </div>
+  </div>
+
+</div>
+
+{% endblock content %}
+
+{% block scripts %}
+<script type="text/javascript" src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+<script type="text/javascript">
+
+    var scanner = new Instascan.Scanner({ video: document.getElementById('preview'), mirror: false, scanPeriod: 5 });
+    var cams;
+    var cameraId = 0;
+
+    (function () {
+      scanner.addListener('scan', function (content) {
+        $.ajax({
+          type: 'POST',
+          url: '/admin/scan/',
+          data: {qrcode: content},
+          success: function (data) {
+            date = new Date();
+            time = date.getHours() + ":" + date.getMinutes().toString().padStart(2, '0') + ":" + date.getSeconds().toString().padStart(2, '0');
+            json = JSON.parse(data);
+            span = `<span class="alert-${json.status}">${time}: ${json.message}</span><br><br>`;
+            $("#log").append(span);
+            $("#log").scrollTop($("#log")[0].scrollHeight);
+          }
+        });
+      });
+      
+      Instascan.Camera.getCameras().then(function (cameras) {
+        cams = cameras;
+        if (cameras.length > 0) {
+          if (cameras.length > 1) {
+            cameraId = 0;
+          }
+          document.getElementById('loadingMessage').hidden = true;
+          document.getElementById('preview').hidden = false;
+          document.getElementById('buttons').hidden = false;
+          scanner.start(cameras[cameraId]);
+        } else {
+          console.error('No cameras found.');
+        }
+      }).catch(function (e) {
+        console.error(e);
+      });
+    })();
+    
+    function switch_camera() {
+      if (cams.length > 0) {
+        if (cameraId == cams.length - 1) {
+          cameraId = 0;
+        } else {
+          cameraId++;
+        }
+        scanner.start(cams[cameraId]);
+      }
+    }
+
+    function manuel_qrcode () {
+      qrcode = $("#manuel_qr").val()
+        $.ajax({
+          type: 'POST',
+          url: '/admin/scan/',
+          data: {qrcode: qrcode},
+          success: function (data) {
+            date = new Date();
+            time = date.getHours() + ":" + date.getMinutes().toString().padStart(2, '0') + ":" + date.getSeconds().toString().padStart(2, '0');
+            json = JSON.parse(data);
+            span = `<span class="alert-${json.status}">${time}: ${json.message}</span><br><br>`;
+            $("#log").append(span);
+            $("#log").scrollTop($("#log")[0].scrollHeight);
+            window.scrollTo(0,0);
+          }
+        });
+    };
+</script>
+{% endblock scripts %}

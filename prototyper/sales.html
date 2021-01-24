@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="manifest" href="/static/favicon/site.webmanifest">
+  <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/static/favicon/apple-touch-icon.png">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="site.css">
+  <title>QRave</title>
+  <style>
+    .hidden {
+      visibility: hidden;
+    }
+  </style>
+</head>
+
+<body>
+  <title>QRave</title>
+  <header class="site-header">
+    <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+      <div class="container">
+        <a class="navbar-brand mr-4" href="/">QRave</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle"
+          aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarToggle">
+          <div class="navbar-nav mr-auto">
+            <a class="nav-item nav-link" href="/events/">Events</a>
+          </div>
+          <!-- Navbar Right Side -->
+          <div class="navbar-nav">
+            <a class="nav-item nav-link" href="/login/">Login</a>
+            <a class="nav-item nav-link" href="/login/">Logout</a>
+            <a class="nav-item nav-link" href="/register/">Register</a>
+            <a class="nav-item nav-link" href="/register/">Tickets</a>
+            <a class="nav-item nav-link" href="/register/">Account</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+  <main role="main" class="container">
+    <div class="row">
+      <div class="col-12">
+        <h1 style="text-align: center;">Biljettförsäljning</h1>
+        <h5 style="text-align: center;">Utekravallen 2020</h5>
+        <hr>
+
+        <div class="row">
+          <div class="col-6">
+            <div class="alert alert-success" role="alert">
+              Köpet genomfört!
+            </div>
+            <div class="content-section">
+              <form>
+
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" swish>
+                  <label class="form-check-label" for="exampleRadios1">Swish</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option2">
+                  <label class="form-check-label" for="exampleRadios1">Kontant</label>
+                </div>
+
+                <hr>
+
+                <div class="form-group">
+                  <label for="liuid">LiU-ID</label>
+                  <input type="text" class="form-control" id="liuid">
+                </div>
+
+                <div class="form-group">
+                  <label for="liuid">Telefon</label>
+                  <input type="phone" class="form-control" id="liuid">
+                </div>
+                
+                <hr>
+                
+                <div class="form-group">
+                  <label for="liuid">Antal biljetter fredag</label>
+                  <input type="number" class="form-control" id="liuid">
+                  <small id="emailHelp" class="form-text text-muted">Max 4 biljetter per köpare.</small>
+                </div>
+
+                <div class="form-group">
+                  <label for="liuid">Antal biljetter lördag</label>
+                  <input type="number" class="form-control" id="liuid">
+                  <small id="emailHelp" class="form-text text-muted">Max 4 biljetter per köpare.</small>
+                </div>
+                
+                <hr>
+
+                <div class="form-group">
+                  <label for="liuid">Antal märken</label>
+                  <input type="number" class="form-control" id="liuid">
+                </div>
+
+                <div class="form-group">
+                  <label for="liuid">Antal neonband</label>
+                  <input type="number" class="form-control" id="liuid">
+                </div>
+
+                <hr>
+
+                <button type="button" class="btn btn-outline-info" data-toggle="modal" data-target="#exampleModal">Reservera biljetter</button>
+                <button type="submit" class="btn btn-outline-info">Acceptera betalning</button>
+
+
+              </form>
+            </div>
+          </div>
+
+          <div class="col-6">
+            
+            <div class="row">
+              <div class="col-12">
+                <div class="content-section">
+                  <h6>Fredag</h6>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                      Biljetter kvar: <span class="font-weight-bold">555</span>
+                      <div class="progress"><div class="progress-bar w-50" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div></div>
+                    </li>
+                    <li class="list-group-item">Reserverade biljetter: <span class="font-weight-bold">4</span></li>
+                    <li class="list-group-item">Sålda biljetter: <span class="font-weight-bold">600</span></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-12">
+                <div class="content-section">
+                  <h6>Lördag</h6>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                      Biljetter kvar: <span class="font-weight-bold">998</span>
+                      <div class="progress"><div class="progress-bar w-75" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div></div>
+                    </li>
+                    <li class="list-group-item">Reserverade biljetter: <span class="font-weight-bold">7</span></li>
+                    <li class="list-group-item">Sålda biljetter: <span class="font-weight-bold">160</span></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+
+        </div>
+        
+
+
+      </div>
+    </div>
+    
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Väntar på Swish</h5>
+            
+            <div class="clearfix">
+              <div class="spinner-border spinner-border-sm float-right" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-body">            
+            Biljetter reserverade
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Stäng</button>
+            <button type="button" class="btn btn-outline-info" data-toggle="tooltip" data-placement="top" title="Forcera endast kontroll av köp om detta fönster inte stängs efter betalningen gått igenom.">
+              Forcera kontroll av köp
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    </div>
+    </div>
+    </div>
+  </main>
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+    integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+    integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+    crossorigin="anonymous"></script>
+  <script src="node_modules/easyqrcodejs/dist/easy.qrcode.min.js" type="text/javascript" charset="utf-8"></script>
+
+  <script>
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip()
+    })
+  </script>
+
+</body>
+
+</html>

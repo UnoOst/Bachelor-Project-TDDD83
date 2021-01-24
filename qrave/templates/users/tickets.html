@@ -1,0 +1,321 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+    {% if tickets|length > 0 %}
+    <h1 style="text-align: center;">Mina biljetter</h1>
+    <hr>
+    {% for ticket in tickets %}
+        <div class="row justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                <div class="card shadow-sm">
+                    <div id="data_{{ ticket.id }}">
+                        <div class="flip-card d-flex justify-content-center">
+                            <div class="available-tickets flip-card-inner">
+                                <div class="flip-card-front">
+                                    <img class="card-img-top mt-4 rounded" style="object-fit: cover; height: 220px; width: 320px; max-height: 220px; max-width: 320px;" src="/static/{{ticket.meta.image}}">
+                                </div>
+                                <div class="flip-card-back qrcode" id="{{ ticket.qrcode }}">               
+                                    <br>
+                                    {{ ticket.qrcode }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body mx-auto" style="width: 350px;">
+                            <div class="row">
+                                <div class="col-4 date-badge">
+                                    <h2>
+                                        <span class="month">{{ticket.meta.date_start.month}}</span>
+                                        <br>
+                                        <span class="date">{{ticket.meta.date_start.day}}</span>
+                                    </h2>
+                                </div>                                
+                                <div class="col-8">
+                                    <h5><a style="color: black;" href="/event/{{ticket.meta.event.id}}">{{ticket.meta.name}} - {{ticket.meta.date_start.year}}</a></h5>
+                                    <p class="card-text">
+                                        <i data-feather="map-pin"></i>
+                                        {{ticket.meta.location}}
+                                    </p>
+                            
+                                    <button class="btn btn-info" id="transfer_button_{{ticket.id}}" data-target="#transferTicketForm_{{ticket.id}}" data-toggle="collapse" type="button" aria-expanded="false" aria-controls="#transferTicketForm_{{ticket.id}}">Överför</button>
+                                    {% if ticket.can_sell %}
+                                    <button class="btn btn-info" id="sell_button_{{ticket.id}}" data-target="#sellTicketForm_{{ticket.id}}" data-toggle="collapse" type="button" aria-expanded="false" aria-controls="#sellTicketForm_{{ticket.id}}">Sälj</button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="package">
+                        <div id="accordion_{{ticket.id}}">
+                            <div class="collapse multi-collapse transferCard" id="transferTicketForm_{{ticket.id}}" data-parent="#accordion_{{ticket.id}}">
+                                <hr>
+                                <div class="card-body">
+                                    <form method="POST" class="transferTicketForm" enctype="application/x-www-form-urlencoded">
+                                        <div class="form-group">
+                                            <input type="hidden" name="id" class="form-control" value="{{ticket.id}}">
+                                            <label for="uid">Användare <small> - Du kan söka efter namn, LiU-ID eller mailadress</small></label>
+                                            <select name="uid" class="form-control uid"></select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <button type="button" class="btn btn-outline-info transferButton">Överför biljett!</button>
+                                        </div>  
+                                    </form>
+                                </div>         
+                            </div>
+                        
+                            <div class="modal transferModal container col-lg-10 offset-lg-2 col-md-9 offset-md-3" tabindex="-1" role="dialog">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Godkänn din överföring!</h5>
+                                            <button type="button" class="close modalClose" data-dismiss="transferModal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="form-group modal-body-form">
+                                                <div class="transferEmail"></div>
+                                            </div>
+                                            <div class="form-group pwd">
+                                                <input type="password" class="form-control" placeholder="Ange ditt lösenord för att verifiera överföringen">
+                                                <div class="invalid-feedback"></div>
+                                            </div>                            
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary modalClose" data-dismiss="transferModal">Stäng</button>
+                                            <button type="button" class="btn btn-outline-info transferModalSend">Överför biljett!</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="collapse multi-collapse sellCard" id="sellTicketForm_{{ticket.id}}" data-parent="#accordion_{{ticket.id}}">
+                                <hr>
+                                <div class="card-body">
+                                    <form method="POST" class="sellTicketForm" enctype="application/x-www-form-urlencoded">
+                                            <div class="form-group">
+                                                <input type="hidden" name="id" class="form-control" value={{ticket.id}}>
+                                                <span>Genom att godkänna försäljningen av din biljett nedan, kommer denna läggas upp under evanemanget för försäljning. Läs mer om hur vi hanterar andrahandsförsäljning <a href="/faq?how">här</a>.</span>
+                                            </div>
+                                            <div class="form-group">
+                                                <button type="button" class="btn btn-outline-info sellButton">Sälj biljett!</button>
+                                            </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="modal sellModal container col-lg-10 offset-lg-2 col-md-9 offset-md-3" tabindex="-1" role="dialog">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Godkänn att din biljett läggs upp för försäljning!</h5>
+                                            <button type="button" class="close modalClose" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="form-group pwd">
+                                                <input type="password" class="form-control" placeholder="Ange ditt lösenord för att verifiera försäljningen">
+                                                <div class="invalid-feedback"></div>
+                                            </div>                            
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-outline-info sellModalSend">Sälj biljett!</button>
+                                            <button type="button" class="btn btn-secondary modalClose">Stäng</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>        
+            </div>
+        </div>
+    <br>
+    {% endfor %}
+    {% else %}
+    <h1 style="text-align: center;">Du har inga biljetter</h1>
+    <hr>
+    <h3 style="text-align: center;"><a style="color:gray;" href="/events/">Se kommande event</a></h3>
+
+    {% endif %}
+    
+{% endblock content %}
+
+{% block head %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+{% endblock head %}
+
+{% block scripts %}
+<script src="/static/node_modules/easyqrcodejs/src/easy.qrcode.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+
+<script>
+    $('.flip-card').on('click',
+      function () {
+        $(this).toggleClass('flipped')
+      }
+    );
+</script>
+
+<script>
+    $(document).ready(function () {
+        var options = {
+            text: "",
+            height: 200,
+            width: 200
+        };
+        {% for ticket in tickets %}
+        try {
+            options.text="{{ticket.qrcode}}";
+            var $t = $("#{{ticket.qrcode}}") [0];
+            new QRCode($t, options);
+        } catch (err) {
+            console.log(err);
+        }
+        {% endfor %}
+    });
+
+
+</script>
+
+<script>
+    $('.uid').select2({
+        ajax: {
+            url: '/api/getusers/',
+            type: 'GET',
+            dataType: 'json',
+            data: function (params) {
+                var query = {
+                    email: params.term
+                }
+                return query;
+            },
+            processResults: function (data) {
+                return {
+                    results: data.results
+                };
+            }
+        }
+    });
+</script>
+
+<script>
+
+    $('.modalClose').click(function () {
+        $(this).parents('div.modal-content').find('input').removeClass("is-invalid");
+        $(this).parents('div.modal-content').find('input').val('');
+        $(this).parents('div.modal-content').find('div.invalid-feedback').empty();
+        $(this).parents('div.modal').modal('hide');
+    });
+
+    $('.transferButton').click(function () {
+        form = $(this).parents('div.package').find('.transferTicketForm');
+        saved_state = $(this).parents('div.package').find('div.transferModal');
+        validateFormTransfer(form, saved_state);
+    }); 
+
+    $('.transferModalSend').click(function() {
+        form = $(this).parents('div.package').find('.transferTicketForm');
+        pwd = $(this).parent().siblings('div.modal-body').find('input').val();
+        saved_state = $(this).parent().siblings('div.modal-body');
+        validatePasswordTransfer(pwd, form, saved_state);
+    });
+
+    $('.sellButton').click(function () {
+        $(this).parents('div.collapse').siblings('div.sellModal').modal('show');
+    });
+
+    $('.sellModalSend').click(function() {
+        pwd = $(this).parent().siblings('div.modal-body').find('input').val();
+        saved_state = $(this).parents('div.sellModal')
+        validatePasswordSell(pwd, saved_state);
+    });
+
+    function validateFormTransfer(form, saved_state) {
+        $.ajax({
+            type: "POST",
+            url: "/api/validateticketform/",
+            data: form.serialize(),
+            success: function(data) {
+                if (data[0]) {    
+                    saved_state.parents('div.package').find('div.email-group').find('div.invalid-feedback').empty();  
+                    saved_state.parents('div.package').find('div.email-group').find('input').removeClass('is-invalid');  
+                    saved_state.modal('show');
+                    email = data[1];
+                    saved_state.parents('div.package').find('div.transferEmail').html('<span> Mottagare: <b> ' + email + '</b> </span>');
+                } else {
+                    saved_state.parents('div.package').find('div.email-group').find('div.invalid-feedback').html("<span> Mailaddressen du angav hittades inte, dubbelkolla mottagarens mailadress och försök igen. </span>");  
+                    saved_state.parents('div.package').find('div.email-group').find('input').addClass('is-invalid');  
+                }
+            }
+        });
+    }
+
+    function validatePasswordTransfer(pwd, form, saved_state) {
+        $.ajax({
+            type: "POST",
+            url: "/api/validatepassword/",
+            contentType: 'application/json',
+            data: JSON.stringify({"pwd": pwd}),
+            success: function(data) {
+                if (data[0]) {
+                    saved_state.find('input').removeClass("is-invalid");
+                    saved_state.find('div.invalid-feedback').empty();
+                    saved_state.parents('div.modal').modal('hide');
+                    transferTicket(form);
+                } else { 
+                    saved_state.find('input').addClass("is-invalid");
+                    saved_state.find('div.invalid-feedback').html("<span>" + "Felaktigt lösenord, försök igen." + "</span>");
+                };
+            }
+        });
+    }
+
+    function transferTicket(form) {
+        $.ajax({
+            type: "POST",
+            url: "/api/transferticket/",
+            data: form.serialize(),
+            success: function() {
+                window.scrollTo(0, 0);
+                location.reload();
+            }
+        });
+    }
+
+    function validatePasswordSell(pwd, saved_state){
+        $.ajax({
+            type: "POST",
+            url: "/api/validatepassword/",
+            contentType: 'application/json',
+            data: JSON.stringify({"pwd": pwd}),
+            success: function(data) {
+                if (data[0]) {
+                    saved_state.modal('hide');
+                    sellTicket(saved_state.siblings('div.sellCard').find('form'));
+                } else { 
+                    saved_state.find('input').addClass("is-invalid");
+                    saved_state.find('div.invalid-feedback').html("<span>" + "Felaktigt lösenord, försök igen." + "</span>");
+                };
+            }
+        });
+    }
+
+    function sellTicket(form) {
+        $.ajax({
+            type: "POST",
+            url: "/api/sellticket/",
+            data: form.serialize(),
+            success: function(data) {
+                if (data) {
+                    window.scrollTo(0, 0);
+                    location.reload();
+                } else {                    
+                }
+            }
+        });
+    }
+
+</script>
+{% endblock scripts %}

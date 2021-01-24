@@ -1,0 +1,298 @@
+{% if not extends %}{% extends "layout.html" %}{% endif %}
+{% block content %}
+
+<h1 style="text-align: center;">Vanliga frågor</h1>
+<hr>
+<div class="mx-auto col-xl-8 col-lg-12 col">
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <nav>
+                <div class="nav nav-tabs card-header-tabs" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link active" id="nav-faquser-tab" data-toggle="tab" href="#nav-faquser" role="tab" aria-controls="nav-faquser" aria-selected="true" style="color:#333333;">För studenter</a>
+                    <a class="nav-item nav-link" id="nav-faqhost-tab" data-toggle="tab" href="#nav-faqhost" role="tab" aria-controls="nav-faqhost" aria-selected="false" style="color:#333333;">För festarrangörer</a>
+                </div>
+            </nav>
+        </div>
+        <div class="tab-content card-body" id="nav-tabContent">
+            <!--Frågor för användarna-->
+            <div class="tab-pane fade show active" id="nav-faquser" role="tabpanel" aria-labelledby="nav-faquser-tab">
+                <div class="accordion" id="accordionUser">
+                    <div class="card">
+                        <div class="card-header" id="heading1">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link text-left" type="button" data-toggle="collapse" data-target="#collapseUser1" aria-expanded="true" aria-controls="collapseUser1" style="color:#333333">
+                                    Var hittar jag min biljett?
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="collapseUser1" class="collapse" aria-labelledby="heading1" data-parent="#accordionUser">
+                            <div class="card-body">
+                                Under "Mina biljetter" sparas de biljetterna du har köpt, reserverat samt använt.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header" id="heading2">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link collapsed text-left" type="button" data-toggle="collapse" data-target="#collapseUser2" aria-expanded="false" aria-controls="collapseUser2" style="color:#333333">
+                                    Hur hittar jag QR-koden till biljetten?
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="collapseUser2" class="collapse" aria-labelledby="heading2" data-parent="#accordionUser">
+                            <div class="card-body">
+                                När du trycker på din biljett kommer bilden vridas 180 grader och QR-koden finns på baksidan. För att se biljetten igen trycker du på kortet en gång till.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header" id="heading3">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link collapsed text-left" type="button" data-toggle="collapse" data-target="#collapseUser3" aria-expanded="false" aria-controls="collapseUser3" style="color:#333333">
+                                    Var hittar jag mina förköp?
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="collapseUser3" class="collapse" aria-labelledby="heading3" data-parent="#accordionUser">
+                            <div class="card-body">
+                                Gå till "Mina biljetter", där finner du en menyrad på vänster sida med "Förköp".
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header" id="heading4">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link collapsed text-left" type="button" data-toggle="collapse" data-target="#collapseUser4" aria-expanded="false" aria-controls="collapseUser4" style="color:#333333">
+                                    Hur överför jag biljetter till någon annan?
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="collapseUser4" class="collapse" aria-labelledby="heading4" data-parent="#accordionUser">
+                            <div class="card-body">
+                                Gå till "Mina biljetter" och tryck på "Överför" på den biljett du vill föra över till någon annan. Skriv in mailadressen till person du vill föra över biljetten till och tryck "Överför biljett!", bekräfta sedan överföringen med ditt lösenord.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header" id="heading5">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link collapsed text-left" type="button" data-toggle="collapse" data-target="#collapseUser5" aria-expanded="false" aria-controls="collapseUser5" style="color:#333333">
+                                    Hur hanteras mina personuppgifter?
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="collapseUser5" class="collapse" aria-labelledby="heading5" data-parent="#accordionUser">
+                            <div class="card-body">
+                                Se fliken "Villkor" längst ner på sidan för att se hur dina personuppgifter hanteras.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header" id="heading6">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link collapsed text-left" type="button" data-toggle="collapse" data-target="#collapseUser6" aria-expanded="false" aria-controls="collapseUser6" style="color:#333333">
+                                    När måste jag senaste betala mitt förköp?
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="collapseUser6" class="collapse" aria-labelledby="heading6" data-parent="#accordionUser">
+                            <div class="card-body">
+                                Förköp måste betalas innan det officiella biljettsläppet.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header" id="heading7">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link collapsed text-left" type="button" data-toggle="collapse" data-target="#collapseUser7" aria-expanded="false" aria-controls="collapseUser7" style="color:#333333">
+                                    Hur sköts andrahandsförsäljning?
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="collapseUser7" class="collapse" aria-labelledby="heading7" data-parent="#accordionUser">
+                            <div class="card-body">
+                                Genom att godkänna försäljningen av en av dina biljetter så läggs den ut för digital försäljning under eventet det gäller. Den hamnar i kö för försäljning och du mottar betalning vid eventuell försäljning.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header" id="heading8">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link collapsed text-left" type="button" data-toggle="collapse" data-target="#collapseUser8" aria-expanded="false" aria-controls="collapseUser8" style="color:#333333">
+                                    Hur länge reserveras min biljett vid Swish-betalning?
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="collapseUser8" class="collapse" aria-labelledby="heading8" data-parent="#accordionUser">
+                            <div class="card-body">
+                                När du köper en biljett digitalt och ska betala med Swish, har du fem minuter på dig att genomföra betalningen. Om du ej genomför transaktionen kan andra köpa biljetten.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header" id="heading9">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link collapsed text-left" type="button" data-toggle="collapse" data-target="#collapseUser9" aria-expanded="false" aria-controls="collapseUser9" style="color:#333333">
+                                    Hur tar jag bort min biljett från andrahandsförsäljning?
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="collapseUser9" class="collapse" aria-labelledby="heading9" data-parent="#accordionUser">
+                            <div class="card-body">
+                                Du har möjlighet att ta bort din biljett från andrahandsförsäljning om denna ännu inte sålts. Om du navigerar till "Mina biljetter" och sedan till "Försäljning" så hittar du dina biljetter som lagts upp för andrahandsförsäljning. Genom att klicka "Ångra försäljning" för den biljett du vill behålla så tas denna bort från försäljningskön.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Frågor för arrangörerna-->
+            <div class="tab-pane fade show" id="nav-faqhost" role="tabpanel" aria-labelledby="nav-faqhost-tab">
+                <div class="accordion" id="accordionHost">
+                    <div class="card">
+                        <div class="card-header" id="headingOne">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link text-left" type="button" data-toggle="collapse" data-target="#collapseHostOne" aria-expanded="true" aria-controls="collapseHostOne" style="color:#333333">
+                                    Hur förmedlar jag föreningens kontaktuppgifter till studenterna?
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="collapseHostOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionHost">
+                            <div class="card-body">
+                                Lägg till Facebook-länk, telefonnummer eller mailadress under informationen om er förening. (Förslagsvis länk till er Facebook-sida) 
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header" id="headingTwo">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link collapsed text-left" type="button" data-toggle="collapse" data-target="#collapseHostTwo" aria-expanded="false" aria-controls="collapseHostTwo" style="color:#333333">
+                                    Hur fungerar kopplingen mellan mitt personliga konto och föreningskonto?
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="collapseHostTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionHost">
+                            <div class="card-body">
+                                När du loggar in hamnar du på ditt personliga konto och kan därigenom se och köpa biljetter till evenemang på QRave. Är du dessutom arrangör tilldelas du behörighet att skapa och ändra event samt sälja biljetter till dessa. Denna behörighet gäller endast under tiden du är aktiv arrangör och tilldelas av systemadministratören.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header" id="headingThree">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link collapsed text-left" type="button" data-toggle="collapse" data-target="#collapseHostThree" aria-expanded="false" aria-controls="collapseHostThree" style="color:#333333">
+                                    Problem att skapa ett nytt event? 
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="collapseHostThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionHost">
+                            <div class="card-body">
+                                Vi rekommenderar att du skapar ett nytt event via datorn och använder Chrome som webbläsare.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header" id="headingFour">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link collapsed text-left" type="button" data-toggle="collapse" data-target="#collapseHostFour" aria-expanded="false" aria-controls="collapseHostFour" style="color:#333333">
+                                    Hur skapar jag ett evenemang?
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="collapseHostFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordionHost">
+                            <div class="card-body">
+                                I sidoverktyget på din föreningssida går du in på "Skapa event" och fyller sedan i formuläret med information om eventet.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header" id="headingFive">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link collapsed text-left" type="button" data-toggle="collapse" data-target="#collapseHostFive" aria-expanded="false" aria-controls="collapseHostFive" style="color:#333333">
+                                    Hur raderar jag ett evenemang?
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="collapseHostFive" class="collapse" aria-labelledby="headingFive" data-parent="#accordionHost">
+                            <div class="card-body">
+                                I sidoverktyget på din föreningssida går du in på "Hantera event" och där hittar du knappen för att radera ett event. Notera att ett event ej kan tas bort om biljetter har delats ut eller sålts, då behöver du kontakta systemadministratören.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header" id="headingSix">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link collapsed text-left" type="button" data-toggle="collapse" data-target="#collapseHostSix" aria-expanded="false" aria-controls="collapseHostSix" style="color:#333333">
+                                    Ansvarar jag som arrangör för att personuppgifter hanteras rätt? 
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="collapseHostSix" class="collapse" aria-labelledby="headingSix" data-parent="#accordionHost">
+                            <div class="card-body">
+                                Ja! Du som arrangör har ett ansvar att personuppgifter hanteras enligt personuppgiftslagen. QRave ansvarar också för att dina och andra användares personuppgifter hanteras enligt personuppgiftslagen. Vidare läsning finns under "Villkor" och på Datainspektionens webbplats. 
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header" id="headingSeven">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link collapsed text-left" type="button" data-toggle="collapse" data-target="#collapseHostSeven" aria-expanded="false" aria-controls="collapseHostSeven" style="color:#333333">
+                                    Vad innebär en kontant betalning?
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="collapseHostSeven" class="collapse" aria-labelledby="headingSeven" data-parent="#accordionHost">
+                            <div class="card-body">
+                                Kontant betalning innebär att köpet ej görs genom Swish. Vid ett kontant köp ansvarar du som arrangör att pengarna förs över korrekt, exempelvis genom en kontantbetalning eller kortbetalning.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header" id="headingEight">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link collapsed text-left" type="button" data-toggle="collapse" data-target="#collapseHostEight" aria-expanded="false" aria-controls="collapseHostEight" style="color:#333333">
+                                    Hur ändrar jag informationen i ett event som lagts upp?
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="collapseHostEight" class="collapse" aria-labelledby="headingEight" data-parent="#accordionHost">
+                            <div class="card-body">
+                                I sidoverktyget på din föreningssida går du in på "Hantera event" och där hittar du knappen "Ändra event". Notera att ett event ej kan ändra antalet biljetter om en eller flera biljetter delats ut eller sålts, då behöver du kontakta systemadministratören
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header" id="headingNine">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link collapsed text-left" type="button" data-toggle="collapse" data-target="#collapseHostNine" aria-expanded="false" aria-controls="collapseHostNine" style="color:#333333">
+                                    Har biljetter kvar efter fysiskt biljettsläpp, hur säljer jag dessa digitalt?
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="collapseHostNine" class="collapse" aria-labelledby="headingNine" data-parent="#accordionHost">
+                            <div class="card-body">
+                                I formuläret för biljetter när ett evenemang skapats kan du välja datum och tid då du vill att ett fysiskt biljettsläpp ska gå över till ett digitalt biljettsläpp.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>    
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block scripts %}
+<script>
+    if (window.location.search == '?how') {
+        console.log("123");
+        $('#collapseUserSix').collapse('toggle');
+        $('#collapseUserSix').on('shown.bs.collapse', function () {
+            var elmnt = document.getElementById("how");
+            elmnt.scrollIntoView();
+        });
+      }
+</script>
+{% endblock scripts %}
+
+

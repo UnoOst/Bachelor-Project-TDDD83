@@ -1,0 +1,108 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="card text-center">
+    <div class="card-body">
+        <h2 class="mb-0">Antal insläppta: <span class="card-title" id="antal"> </span></h2>
+        <canvas id="canvas"></canvas>
+    </div>
+</div>
+{% endblock content %}
+
+{% block head %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css" rel="stylesheet">
+{% endblock head %}
+
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+
+<script>
+
+    $(document).ready(function () {
+        $.ajax({
+            type: "GET",
+            url: "/api/stats/{{meta.id}}",
+            success: function (event) {
+                const config = {
+                    type: 'line',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: "{{meta.event.name|safe}}",
+                            data: [],
+                            fill: false,
+                            backgroundColor: 'rgb(255, 99, 132)',
+                            borderColor: 'rgb(255, 99, 132)'
+                        }],
+                    },
+                    options: {
+                        responsive: true,
+                        lineTension: 0,
+                        tooltips: {
+                            enabled: true
+                        },
+                        title: {
+                            display: false,
+                            text: "{{meta.event.name|safe}}"
+                        },
+                        scales: {
+                            xAxes: [{
+                                type: 'time',
+                                time: {
+                                    unit: 'minute',
+                                    displayFormats: {
+                                        minute: 'HH:mm'
+                                    }
+                                },
+                                distribution: 'linear',
+                                display: true,
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'Tid'
+                                },
+                                ticks: {
+                                    source: 'auto',
+                                    display: true
+                                }
+                            }],
+                            yAxes: [{
+                                display: true,
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'Antal insläppta'
+                                },
+                                ticks: {
+                                    display: true,
+                                    source: 'auto',
+                                    beginAtZero: true,
+                                    suggestedMax: 100,
+                                    stepSize: 1
+                                }
+                            }]
+                        }
+                    }
+                };
+                
+                
+                const context = document.getElementById('canvas').getContext('2d');
+                const lineChart = new Chart(context, config);
+                
+                const data = JSON.parse(event);
+                if (data.length > 0) {
+                    var max = 1.5*data[data.length-1].y;
+                    $("#antal").html(data[data.length-1].y);
+                    config.options.scales.yAxes[0].ticks.suggestedMax = max;
+                    config.options.scales.yAxes[0].ticks.stepSize = parseInt(max/10);
+                } else {
+                    $("#antal").html(0);
+                    config.options.scales.yAxes[0].ticks.suggestedMax = 1600;
+                    config.options.scales.yAxes[0].ticks.stepSize = parseInt(1600/10);
+                }
+                config.data.datasets[0].data = data;
+                lineChart.update();
+            }
+        });
+        
+    });
+</script>
+{% endblock scripts %}

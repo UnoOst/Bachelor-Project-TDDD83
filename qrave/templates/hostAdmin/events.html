@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h1 style="text-align: center;">{{host.long_name}} <img src="/static/{{host.image}}?v={{ date }}" class="host-top-image" alt=""></h1>
+
+<hr>
+
+<h3 style="text-align: center;">Hantera event</h3>
+
+<div class="card-group">
+  <div class="row justify-content-center">
+  {% for event in host.events %}
+      <div class="host-event-cards">
+        <div class="card shadow-sm" style="width: 14rem;">
+          <div class="image-wrapper" style="position: relative; padding-bottom: 56.25%;">
+            <img class="card-img-top" style="position: absolute; object-fit: cover; width: 100%; height: 100%;" src="/static/{{event.image}}" alt="Card image cap">
+          </div>
+          <div class="card-body date-badge" style="text-align: left;">
+              <h5 class="card-title"><a style="color: #444444;" href="/event/{{event.id}}" class="text-reset">{{event.name}}</a>
+              <p class="font-weight-light date" style="font-size: 90%;">{{event.date_start.day}} <span class="month" style="font-size: 100%;">{{event.date_start.month}}</span> {{event.date_start.year}}</p></h5>
+              <a class="btn btn-outline-secondary mb-1" href="/hostAdmin/event/{{event.id}}" role="button">Hantera</a>
+          </div>
+        </div>
+      </div>
+   
+  {% endfor %}
+</div>
+</div>
+
+{% endblock content %}

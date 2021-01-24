@@ -1,0 +1,139 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="card shadow-sm" >
+    <div class="card-body">
+{% if payment.paid %}
+
+
+      <h3 class="card-title">Köpet genomfört!</h3>
+      <p class="card-text">Biljetterna finns nu på ditt konto under <a href="/tickets/">Mina biljetter.</a> </p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col" class="w-75">Biljetter</th>
+                    <th scope="col" class="w-25">Pris</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ticket in payment.tickets %}
+                <tr>
+                    <th scope="row">{{ticket.meta.name}}<br><small class="weekday">{{ticket.meta.date_start.weekday()}}</small></th>
+                    <td>{{ticket.meta.price}}</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <th scope="row">Summa:</th>
+                    <th class="sum">{{payment.price}}</th>
+                </tr>
+            </tbody>
+        </table>
+        {% elif payment_failed %}
+        <h3 class="card-title">Swish-betalningen misslyckades</h3>
+        <hr>
+        
+        <form method="POST">
+        <label class="form-control-label">Telefonnummer</label>
+        <input name="message" type="hidden" value="{{message}}">
+        <div class="input-group col-6">
+            <input name="phone" type="text" value="{{phone}}" class="form-control">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="submit">Försök igen</button>
+            </div>
+        </div>
+        <br>
+        </form>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col" class="w-50">Biljetter</th>
+                    <th scope="col" class="w-25">Andra-hand</th>
+                    <th scope="col" class="w-20">Pris</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ticket in payment.tickets %}
+                <tr>
+                    <th scope="row">{{ticket.meta.name}}<br><small class="weekday">{{ticket.meta.date_start.weekday()}}</small></th>
+                    {% if ticket.owner is not none %}
+                    <td>Ja</td>
+                    {% else %}
+                    <td>Nej</td>
+                    {% endif %}
+                    <td>{{ticket.meta.price}}</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <th scope="row">Summa:</th>
+                    <td></td>
+                    <th class="sum">{{payment.price}}</th>
+                </tr>
+            </tbody>
+        </table>
+        {% else %}
+        <h3 class="card-title">Väntar på Swish... <div class="spinner-border float-right text-success" role="status">
+            <span class="sr-only">Loading...</span>
+          </div></h3>
+              
+        <p class="card-text">Öppna swish-appen på din mobila enhet för att slutföra betalningen.</p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Biljetter</th>
+                    <th scope="col">Andra-hand</th>
+                    <th scope="col">Pris</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ticket in payment.tickets %}
+                <tr>
+                    <th scope="row">{{ticket.meta.name}}<br><small class="weekday">{{ticket.meta.date_start.weekday()}}</small></th>
+                    {% if ticket.owner is not none %}
+                    <td>Ja</td>
+                    {% else %}
+                    <td>Nej</td>
+                    {% endif %}
+                    <td>{{ticket.meta.price}}</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <th scope="row">Summa:</th>
+                    <td></td>
+                    <th class="sum">{{payment.price}}</th>
+                </tr>
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+<script>
+$(document).ready(function () {
+    if (!{{payment.paid|lower}} && !{{payment_failed|lower}}) {
+        (function worker (){
+            $.ajax({
+                url: '/api/swishForce',
+                type: 'POST',
+                headers: {'swishurl': '{{payment.swish_url}}'},
+                success: function (data) {
+                    if (data["status"] != 'CREATED') {
+                        window.location.reload();
+                    }
+                },
+                complete: function () {
+                    setTimeout(worker, 1000);
+                }
+            })
+            
+        })();
+
+    }
+
+    $('.weekday').each(function () {
+        weekday = ['Måndag', 'Tidsag','Onsdag','Torsdag','Fredag','Lördag','Söndag']
+        $(this).html(weekday[parseInt($(this).html())])
+    });
+});
+</script>
+{% endblock scripts %}

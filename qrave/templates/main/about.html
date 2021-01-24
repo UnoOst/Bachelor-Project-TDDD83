@@ -1,0 +1,125 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="col-lg-8 offset-lg-2 col-md-12 card shadow-sm">
+  <div class="card-body">
+    <h1 class="card-title" style="text-align: center;">Vår Vision</h1>
+    <p class="card-text"> Det ska vara roligt och enkelt att både gå på och arrangera event. Det finns alltid orosmoment med biljetthantering och vi på QRave vill underlätta biljetthantering och ge en förhöjd upplevelse till både arrangörer och gäster innan, under och efter event. Eftersom vi riktar oss mot studenter är det dessutom viktigt för oss att göra detta till minsta möjliga kostnad utan att tumma på kvaliteten hos QRave. </p>
+    <p class="card-text">
+      Med hjälp av QRave har du som gäst tillgång till din biljett direkt i mobilen och behöver aldrig oroa dig för att tappa bort eller ta sönder biljetten. Som arrangör behöver du inte längre trycka, stämpla, prägla, frakta eller sortera biljetter och istället fokusera på att skapa ett roligt evenemang! </p>
+    </p>
+    <br>
+      <div class="img-fluid">
+        <img class="card-img-top" src="/static/images/TidslinjeQrave.png">
+    </div>
+  </div>
+</div>
+<br>
+
+<div class="col-lg-8 offset-lg-2 col-md-12 card shadow-sm">
+  <div class="card-body">
+    <h1 class="card-title" style="text-align: center;">Om oss</h1>
+    <p class="card-text">QRave skapades 2020 av studenter, för studenter. Detta för att lösa problemet med hur det existerande biljettsystem
+      såg ut. Ett system som både studenter och arrangörer ansåg kunde förbättras. Med hjälp av QRave skall förhoppningsvis den totala festupplevelsen för 
+      studenterna ändras till det bättre och samtidigt resultera i minskad arbetsbörda för arrangörerna.</p>
+  </div>
+</div>
+<br>
+
+<h1 style="text-align: center;">Teamet</h1>
+<hr>
+<div class="container">
+<div class="row">
+
+  <div class="col-sm-6 mb-3 col-lg-3 text-center">
+    <div class="card shadow-sm">
+      <img class="card-img-top" src="/static/images/jesper3.jpg">
+      <div class="card-body"> Jesper Jissbacke</div>
+    </div>
+  </div>
+  <div class="col-sm-6 mb-3 col-lg-3 text-center">
+    <div class="card shadow-sm">
+      <img class="card-img-top" src="/static/images/uno.jpg">
+      <div class="card-body">Uno Österman</div>
+    </div>
+  </div>
+  <div class="col-sm-6 mb-3 col-lg-3 text-center">
+    <div class="card shadow-sm">
+      <img class="card-img-top" src="/static/images/oskar.jpg">
+      <div class="card-body">Oskar Lindström</div>
+    </div>
+  </div>
+  <div class="col-sm-6 mb-3 col-lg-3 text-center">
+    <div class="card shadow-sm">
+      <img class="card-img-top" src="/static/images/david.jpg">
+      <div class="card-body">David Forslöf</div>
+    </div>
+  </div>
+</div>
+
+<div class="row" style="padding-bottom:75px;">
+
+  <div class="col-sm-6 mb-3 col-lg-3 text-center">
+    <div class="card shadow-sm">
+      <img class="card-img-top" src="/static/images/jc.jpg" id="meme">
+      <div class="card-body">Jesper Carlsson</div>
+    </div>
+  </div>
+  <div class="col-sm-6 mb-3 col-lg-3 text-center">
+    <div class="card shadow-sm">
+      <img class="card-img-top" src="/static/images/agnes.jpg">
+      <div class="card-body">Agnes Öberg</div>
+    </div>
+  </div>
+  <div class="col-sm-6 mb-3 col-lg-3 text-center">
+    <div class="card shadow-sm">
+      <img class="card-img-top" src="/static/images/emil2.jpg">
+      <div class="card-body">Emil Strömberg</div>
+    </div>
+  </div>
+  <div class="col-sm-6 mb-3 col-lg-3 text-center">
+    <div class="card shadow-sm">
+      <img class="card-img-top" src="/static/images/filip.jpg">
+      <div class="card-body">Filip Nyberg</div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+
+<div class="toast" aria-live="assertive" aria-atomic="true" style="position: fixed; z-index: 1000; visibility: hidden; top: 15%; left:0%; min-width: 100vw;" data-delay="100" data-autohide="true">
+    <div class="toast-body" style="text-align: center;">
+      <h1 style="font-size: 20rem;">LEAN</h1>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block scripts%}
+<script>
+  $(".toast").toast();
+  var count=0;
+  $("#meme").click( function (){
+    count++;
+    console.log(count);
+    if(count%4==1){
+      
+    $(".toast").first().toast("show");
+    $(".toast").first().css("visibility", 'visible');
+
+    }
+    if(count==50){
+      window.location.replace('/lean');
+
+    
+
+    }
+  });
+
+
+
+</script>
+
+
+{% endblock scripts %}

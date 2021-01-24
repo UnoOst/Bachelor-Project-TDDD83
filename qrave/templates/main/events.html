@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h1 style="text-align: center;">Kommande event</h1>
+<hr>
+
+{% for event in events %}
+<div class="row justify-content-center">
+    
+    <div class="col-lg-10 col-xl-8">
+        <div class="card shadow-sm">
+            <img class="card-img-top" src="/static/{{event.image}}" style="max-height: 300px; object-fit: cover;">
+            
+            <div class="card-body">
+                <div class="row justify-content-center">
+                    <div class="col-3 date-badge">
+                        <h2>
+                            <span class="month">{{event.date_start.month}}</span>
+                            <br>
+                            <span class="date">{{event.date_start.day}}</span>
+                        </h2>
+                    </div>
+                    <div class="col-6">
+                        <h5><a href="/event/{{event.id}}"> {{event.name}} - {{event.date_start.year}} </a> </h5>
+                        <p class="card-text">
+                            <a href="/hosts/{{event.host_id}}">{{event.host.long_name}}</a>
+                            {% if event.cohosts %}
+                                {% for cohost in event.cohosts %}
+                                    , <a href="/hosts/{{cohost.id}}">{{cohost.long_name}}</a>
+                                {% endfor %}
+                            {% endif %}
+                            <br>
+                                Biljettsläpp: {{event.date_ticket_sale.strftime('%Y-%m-%d kl %H:%M')}} i {{event.ticket_location}}
+                        </p>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+</div>
+<br>
+{% endfor %}
+
+{% endblock content %}
+
+

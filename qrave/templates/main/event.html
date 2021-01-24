@@ -1,0 +1,103 @@
+{% if not extends %}{% extends "layout.html" %}{% endif %}
+{% block content %}
+
+
+<h1 style="text-align: center;">{{event.name}}</h1>
+<hr>
+<div class="mx-auto col-xl-8 col-lg-12 col">
+
+    <div class="card shadow-sm">
+        <img src="/static/{{event.image}}" class="card-img-top img-fluid w-100" style="object-fit: cover;">
+        
+        <div class="card-body">
+            {{event.description|safe}}
+        </div>
+        
+        <div class="card-header" style="border-top: 1px solid rgba(0,0,0,.125);">
+            <ul class="nav nav-tabs card-header-tabs" id="nav-tab" role="tablist" style="flex-wrap: nowrap;">
+            {% for ticket in event.ticket_meta %}
+                {% if loop.index == 1 %}
+                <li class="nav-item">
+                    <a class="nav-link active" href="#ticket-{{ticket.id}}" id="nav-{{ticket.id}}-tab" role="tab" aria-controls="ticket-{{ticket.id}}" aria-selected="true">{{ticket.name}}</a>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="#ticket-{{ticket.id}}" id="nav-{{ticket.id}}-tab" role="tab" aria-controls="ticket-{{ticket.id}}" aria-selected="false">{{ticket.name}}</a>
+                </li>
+                {% endif %}
+            {% endfor %}
+            </ul>
+        </div>
+
+        <div class="card-body">
+            
+            <div class="tab-content" id="ticket-tabs">
+                {% for ticket in event.ticket_meta %}
+                {% if loop.index == 1 %}
+                <div class="tab-pane row active" id="ticket-{{ticket.id}}" role="tabpanel" aria-labelledby="nav-{{ticket.id}}-tab">
+                {% else %}
+                <div class="tab-pane row" id="ticket-{{ticket.id}}" role="tabpanel" aria-labelledby="nav-{{ticket.id}}-tab">
+                {% endif %}
+                    <div class="col-sm-4 col-md-3 date-badge">
+                        <h2>
+                            <span class="month">{{ticket.date_start.month}}</span>
+                            <br>
+                            <span class="date">{{ticket.date_start.day}}</span>
+                            <br><a href="/buy_tickets/{{event.id}}" class="btn btn-primary">Köp biljett</a>
+                        </h2>
+                    </div>
+
+                    <div class="col-sm-12 col-md-8">
+                            {% if event.cohosts %}
+                            Arrangörer: <a href="/hosts/{{event.host_id}}">{{event.host.long_name}}</a>
+                                {% for cohost in event.cohosts %}
+                                    , <a href="/hosts/{{cohost.id}}">{{cohost.long_name}}</a>
+                                {% endfor %}
+                            {% else %}
+                            Arrangör: <a href="/hosts/{{event.host_id}}">{{event.host.long_name}}</a>
+                            {% endif %}
+                            <br>
+                        Plats: 
+                        {{ticket.location}}
+                        <br>
+                        Biljettsläpp: {{event.date_ticket_sale.strftime('%Y-%m-%d kl %H:%M')}} i {{event.ticket_location}}
+                        <br>
+                        Pris: {{ticket.price}}kr 
+                        <br>
+                        Max antal biljetter per person: {{ticket.max_per_user}}
+                    </div>
+                    {% if ticket.description %}
+                    <div class="col-12">
+                        <hr>
+                        {{ticket.description|safe}}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+
+<script>
+    $(document).ready(function () {
+        $('#nav-tab a').on('click', function (e) {
+            e.preventDefault()
+            $(this).tab('show')
+        });
+    });
+</script>
+
+{% endblock scripts %}
+
+{% block head %}
+<style>
+    .tab-content>.active {
+        display: flex !important;
+    }
+
+</style>
+{% endblock head %}
